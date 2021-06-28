@@ -1,0 +1,168 @@
+const rows = 40, cols = 40, sqSize = 20
+var snake, apple
+var frameRate = 6
+var gameItvl, live = false
+
+const canvas = document.getElementById('canvas')
+canvas.height = rows * sqSize
+canvas.width = cols * sqSize
+
+const ctx = canvas.getContext('2d')
+
+class Pos {
+  constructor(x, y) {
+    this.x = x
+    this.y = y
+  }
+
+  getX() {
+    return this.x
+  }
+
+  getY() {
+    return this.y
+  }
+
+  setPos(x, y) {
+    this.x = x
+    this.y = y
+  }
+}
+class Snake  {
+  constructor() {
+    this.pos = new Pos(2, 0)
+    this.body = [ new Pos(0, 0),new Pos(1, 0),new Pos(2, 0) ]
+    this.direction = 'right'
+  }
+
+  hasBody(pos) {
+    for(let i in this.body) {
+      if(this.body[i].x == pos.x && this.body[i].y == pos.y) {
+        return true
+      }
+    }
+    return false
+  }
+
+}
+
+function move() {
+    let newHead
+    if(snake.direction == 'right') {
+      newHead = new Pos(snake.pos.getX() + 1, snake.pos.getY())
+    } else if(snake.direction == 'left') {
+      newHead = new Pos(snake.pos.getX() - 1, snake.pos.getY())
+    } else if(snake.direction == 'up') {
+      newHead = new Pos(snake.pos.getX(), snake.pos.getY() - 1)
+    } else if(snake.direction == 'down') {
+      newHead = new Pos(snake.pos.getX(), snake.pos.getY() + 1)
+    }
+    
+    if(!hasFood(newHead)) {
+      snake.body.shift()
+    } else {
+      if(snake.body.length % 2) {
+        frameRate = frameRate + 1
+      }
+      generateApple()
+    }
+    if(!hasWall(newHead) && !snake.hasBody(newHead)) {
+      snake.body.push(newHead)
+      snake.pos = newHead
+      draw()
+    } else {
+      stopGame()
+    }
+}
+
+function setup() {
+  snake = new Snake()
+  generateApple()
+  draw()
+}
+
+function draw() {
+  ctx.clearRect(0, 0, rows * sqSize, cols * sqSize)
+
+  for(let x = 0; x < cols; x++) {
+    for(let y = 0; y < rows; y++) {
+      if(apple.getX() == x && apple.getY() == y) {
+        ctx.beginPath()
+        ctx.arc(x * sqSize  + (sqSize / 2), y * sqSize +  (sqSize / 2), sqSize / 2, 2 * Math.PI, false)
+        ctx.fillStyle = "#FF0800" 
+        ctx.fill()
+      }
+      if(snake.hasBody(new Pos(x, y))) {
+          ctx.fillStyle = "#569527" 
+          ctx.fillRect(x * sqSize, y * sqSize, sqSize, sqSize)
+      }
+    }
+  }
+}
+
+function generateApple() {
+  let newApple = new Pos(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows))
+
+  while(snake.hasBody(newApple)) {
+    debugger
+    newApple = new Pos(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows))
+  }
+  
+  apple = newApple
+}
+
+function hasFood(pos) {
+  return apple.x == pos.x && apple.y == pos.y
+}
+
+function hasWall(pos) {
+  return pos.x == -1 || pos.y == -1 || pos.x == cols || pos.y == rows
+}
+
+function stopGame() {
+  live = false
+  clearInterval(gameItvl)
+  alert("You died...")
+}
+
+function startGame() {
+  setup()
+  clearInterval(gameItvl)
+  gameItvl = setInterval(function() {
+    move()
+  }, 1000/frameRate)
+  live = true
+}
+
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode == '38') {
+        // up arrow
+        if(snake.direction != 'down') {
+          snake.direction = 'up'
+        }
+    }
+    else if (e.keyCode == '40') {
+        // down arrow
+        if(snake.direction != 'up') {
+          snake.direction = 'down'
+        }
+    }
+    else if (e.keyCode == '37') {
+       // left arrow
+       if(snake.direction != 'right') {
+        snake.direction = 'left'
+      }
+    }
+    else if (e.keyCode == '39') {
+       // right arrow
+       if(snake.direction != 'left') {
+        snake.direction = 'right'
+      }
+    }
+
+}
