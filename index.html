@@ -6,13 +6,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Snake</title>
   <style>
+    body {
+      display: flex
+    }
+
     canvas {
       border: solid 4px black;
+    }
+
+    
+    .menu {
+      padding: 0 50px;
+    }
+
+    .menu button {
+      margin: 5px 10px;
+      padding: 10px 20px;
+    }
+    
+    .menu button.hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <div class="menu">
+    <h2>Score: <strong id="score">0</strong></h2>
+    <h2>Speed: <strong id="speed">6</strong></h2>
+  </div>
   <script src="./Snake.js"></script>
 </body>
 </html>

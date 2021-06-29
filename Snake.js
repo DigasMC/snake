@@ -2,6 +2,7 @@ const rows = 40, cols = 40, sqSize = 20
 var snake, apple
 var frameRate = 6
 var gameItvl, live = false
+var nextDirection, score = 0
 
 const canvas = document.getElementById('canvas')
 canvas.height = rows * sqSize
@@ -48,6 +49,7 @@ class Snake  {
 
 function move() {
     let newHead
+    snake.direction = nextDirection
     if(snake.direction == 'right') {
       newHead = new Pos(snake.pos.getX() + 1, snake.pos.getY())
     } else if(snake.direction == 'left') {
@@ -61,14 +63,14 @@ function move() {
     if(!hasFood(newHead)) {
       snake.body.shift()
     } else {
-      if(snake.body.length % 2) {
-        frameRate = frameRate + 1
-      }
+      frameRate = frameRate + 1
+      score = score + 10
       generateApple()
     }
     if(!hasWall(newHead) && !snake.hasBody(newHead)) {
       snake.body.push(newHead)
       snake.pos = newHead
+      score = score + 1
       draw()
     } else {
       stopGame()
@@ -76,9 +78,13 @@ function move() {
 }
 
 function setup() {
+  ctx.fillStyle = "#000000"
+  ctx.textAlign = "center";
+  ctx.font = "30px Arial";
+  ctx.fillText("Press space to start", canvas.width / 2, 20 * sqSize);
   snake = new Snake()
+  nextDirection = snake.direction
   generateApple()
-  draw()
 }
 
 function draw() {
@@ -104,7 +110,6 @@ function generateApple() {
   let newApple = new Pos(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows))
 
   while(snake.hasBody(newApple)) {
-    debugger
     newApple = new Pos(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows))
   }
   
@@ -122,14 +127,21 @@ function hasWall(pos) {
 function stopGame() {
   live = false
   clearInterval(gameItvl)
-  alert("You died...")
+  ctx.textAlign = "center";
+  ctx.font = "30px Arial";
+  ctx.fillStyle = "#FF0000"
+  ctx.fillText("You died!", canvas.width / 2, 15 * sqSize);
+  ctx.fillText("Press space to start", canvas.width / 2, 25 * sqSize );
 }
 
 function startGame() {
   setup()
+  score = 0;
   clearInterval(gameItvl)
   gameItvl = setInterval(function() {
     move()
+    document.getElementById('score').innerHTML = score
+    document.getElementById('speed').innerHTML = frameRate
   }, 1000/frameRate)
   live = true
 }
@@ -143,26 +155,34 @@ function checkKey(e) {
     if (e.keyCode == '38') {
         // up arrow
         if(snake.direction != 'down') {
-          snake.direction = 'up'
+          nextDirection = 'up'
         }
     }
     else if (e.keyCode == '40') {
         // down arrow
         if(snake.direction != 'up') {
-          snake.direction = 'down'
+          nextDirection = 'down'
         }
     }
     else if (e.keyCode == '37') {
        // left arrow
        if(snake.direction != 'right') {
-        snake.direction = 'left'
+        nextDirection = 'left'
       }
     }
     else if (e.keyCode == '39') {
        // right arrow
        if(snake.direction != 'left') {
-        snake.direction = 'right'
+        nextDirection = 'right'
       }
     }
+    else if (e.keyCode == '32') {
+      // right arrow
+      if(!live) {
+        startGame()
+      }
+   }
 
 }
+
+setup()
