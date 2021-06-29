@@ -63,7 +63,10 @@ function move() {
     if(!hasFood(newHead)) {
       snake.body.shift()
     } else {
-      frameRate = frameRate + 1
+      if(snake.body.length % 2) {
+        frameRate = frameRate + 1
+        updateFPS()
+      }
       score = score + 10
       generateApple()
     }
@@ -84,6 +87,7 @@ function setup() {
   ctx.fillText("Press space to start", canvas.width / 2, 20 * sqSize);
   snake = new Snake()
   nextDirection = snake.direction
+  frameRate = 6
   generateApple()
 }
 
@@ -132,6 +136,15 @@ function stopGame() {
   ctx.fillStyle = "#FF0000"
   ctx.fillText("You died!", canvas.width / 2, 15 * sqSize);
   ctx.fillText("Press space to start", canvas.width / 2, 25 * sqSize );
+}
+
+function updateFPS() {
+  clearInterval(gameItvl)
+  gameItvl = setInterval(function() {
+    move()
+    document.getElementById('score').innerHTML = score
+    document.getElementById('speed').innerHTML = frameRate
+  }, 1000/frameRate)
 }
 
 function startGame() {
