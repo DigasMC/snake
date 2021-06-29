@@ -3,6 +3,7 @@ var snake, apple
 var frameRate = 6
 var gameItvl, live = false
 var nextDirection, score = 0
+var highscore = 0
 
 const canvas = document.getElementById('canvas')
 canvas.height = rows * sqSize
@@ -78,6 +79,9 @@ function move() {
     } else {
       stopGame()
     }
+    if(score > highscore) {
+      highscore = score
+    }
 }
 
 function setup() {
@@ -133,7 +137,7 @@ function stopGame() {
   clearInterval(gameItvl)
   ctx.textAlign = "center";
   ctx.font = "30px Arial";
-  ctx.fillStyle = "#FF0000"
+  ctx.fillStyle = "#FF0000"  
   ctx.fillText("You died!", canvas.width / 2, 15 * sqSize);
   ctx.fillText("Press space to start", canvas.width / 2, 25 * sqSize );
 }
@@ -144,6 +148,7 @@ function updateFPS() {
     move()
     document.getElementById('score').innerHTML = score
     document.getElementById('speed').innerHTML = frameRate
+    document.getElementById('highscore').innerHTML = highscore
   }, 1000/frameRate)
 }
 
@@ -155,6 +160,7 @@ function startGame() {
     move()
     document.getElementById('score').innerHTML = score
     document.getElementById('speed').innerHTML = frameRate
+    document.getElementById('highscore').innerHTML = highscore
   }, 1000/frameRate)
   live = true
 }
