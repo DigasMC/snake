@@ -1,6 +1,6 @@
 const rows = 40, cols = 40, sqSize = 20
 var snake, apple
-var frameRate = 6
+var frameRate = 6, infinite = false
 var gameItvl, live = false
 var nextDirection, score = 0
 var highscore = 0
@@ -71,7 +71,13 @@ function move() {
       score = score + 10
       generateApple()
     }
-    if(!hasWall(newHead) && !snake.hasBody(newHead)) {
+    if((!hasWall(newHead) || infinite) && !snake.hasBody(newHead)) {
+      if(infinite) {
+        if(newHead.getX() < 0) newHead.setPos(cols - 1, newHead.getY())
+        if(newHead.getY() < 0) newHead.setPos(newHead.getX(), rows - 1)
+        if(newHead.getX() > cols - 1) newHead.setPos(0, newHead.getY())
+        if(newHead.getY() > rows - 1) newHead.setPos(newHead.getX(), 0)
+      }
       snake.body.push(newHead)
       snake.pos = newHead
       score = score + 1
@@ -140,6 +146,7 @@ function stopGame() {
   ctx.fillStyle = "#FF0000"  
   ctx.fillText("You died!", canvas.width / 2, 15 * sqSize);
   ctx.fillText("Press space to start", canvas.width / 2, 25 * sqSize );
+  document.getElementById('infinite').disabled = false
 }
 
 function updateFPS() {
@@ -163,6 +170,7 @@ function startGame() {
     document.getElementById('highscore').innerHTML = highscore
   }, 1000/frameRate)
   live = true
+  document.getElementById('infinite').disabled = true
 }
 
 document.onkeydown = checkKey;
@@ -202,6 +210,12 @@ function checkKey(e) {
       }
    }
 
+}
+
+function toggleInfinite() {
+  if(!live) {
+    infinite = document.getElementById('infinite').checked 
+  }
 }
 
 setup()
