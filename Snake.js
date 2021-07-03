@@ -61,22 +61,23 @@ function move() {
       newHead = new Pos(snake.pos.getX(), snake.pos.getY() + 1)
     }
     
-    if(!hasFood(newHead)) {
-      snake.body.shift()
-    } else {
-      if(snake.body.length % 2) {
-        frameRate = frameRate + 1
-        updateFPS()
-      }
-      score = score + 10
-      generateApple()
-    }
+    
     if((!hasWall(newHead) || infinite) && !snake.hasBody(newHead)) {
       if(infinite) {
         if(newHead.getX() < 0) newHead.setPos(cols - 1, newHead.getY())
         if(newHead.getY() < 0) newHead.setPos(newHead.getX(), rows - 1)
         if(newHead.getX() > cols - 1) newHead.setPos(0, newHead.getY())
         if(newHead.getY() > rows - 1) newHead.setPos(newHead.getX(), 0)
+      }
+      if(!hasFood(newHead)) {
+        snake.body.shift()
+      } else {
+        if(snake.body.length % 2) {
+          frameRate = frameRate + 1
+          updateFPS()
+        }
+        score = score + 10
+        generateApple()
       }
       snake.body.push(newHead)
       snake.pos = newHead
