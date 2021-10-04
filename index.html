@@ -1,42 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snake</title>
-  <style>
-    body {
-      display: flex
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Righteous"
+    />
+    <title>Snake</title>
+    <style>
+      body {
+        margin: 0;
+        background: #fff;
+        font-family: "Righteous";
+      }
 
-    canvas {
-      border: solid 4px black;
-    }
+      canvas {
+        border: solid 4px black;
+        background: #fafafa;
+      }
 
-    
-    .menu {
-      padding: 0 50px;
-    }
+      .menu {
+        display: flex;
+        padding: 0 10px;
+        height: 60px;
+        text-align: center;
+      }
 
-    .menu button {
-      margin: 5px 10px;
-      padding: 10px 20px;
-    }
-    
-    .menu button.hidden {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="canvas"></canvas>
-  <div class="menu">
-    <h2>Highscore: <strong id="highscore">0</strong></h2>
-    <h2>Score: <strong id="score">0</strong></h2>
-    <h2>Speed: <strong id="speed">6</strong></h2>
-    <input onchange="toggleInfinite()" type="checkbox" name="infinte" id="infinite"> <label for="infinite">NO walls</label>
-  </div>
-  <script src="./Snake.js"></script>
-</body>
+      .menu button,
+      select {
+        position: relative;
+        font-family: "Righteous";
+        margin: 5px 10px;
+        padding: 10px 30px;
+        font-size: 16px;
+        color: white;
+        background-color: #0055b3;
+        border-radius: 4px;
+        border: 2px solid #001833;
+      }
+
+      select {
+        padding: 10px;
+      }
+
+      .menu button:disabled,
+      select:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .menu button span {
+        font-size: 10px;
+        color: lightgrey;
+      }
+
+      input[type="checkbox"] {
+        appearance: none;
+        -ms-progress-appearance: none;
+        position: absolute;
+      }
+
+      input[type="checkbox"] + label {
+        position: relative;
+        font-family: "Righteous";
+        margin: 5px 10px;
+        padding: 10px 30px;
+        font-size: 16px;
+        line-height: 25px;
+        background-color: white;
+        color: #0055b3;
+        border-radius: 4px;
+        border: 2px solid #001833;
+      }
+
+      input[type="checkbox"]:checked + label {
+        color: white;
+        background-color: #0055b3;
+      }
+
+      input[type="checkbox"]:disabled + label {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      label {
+        margin: 15px 0;
+      }
+
+      label + label {
+        margin-left: 15px;
+      }
+
+      .players {
+        display: flex;
+        flex-direction: row;
+        margin-left: auto;
+      }
+
+      .player {
+        margin-left: 20px;
+        color: white;
+      }
+
+      .player.green span {
+        background-color: #569527;
+      }
+      .player.blue span {
+        background-color: #004999;
+      }
+      .player.orange span {
+        background-color: #ff781f;
+      }
+      .player.pink span {
+        background-color: #ff80ce;
+      }
+
+      .keys {
+        display: grid;
+        grid-template-columns: 20px 20px 20px;
+        grid-template-columns: auto;
+        grid-template-areas: ". up ." "left down right";
+      }
+
+      .keys > div {
+        color: black;
+        width: 20px;
+        height: 20px;
+        line-height: 18px;
+        border: solid 1px grey;
+        background-color: white;
+      }
+
+      .keys .left {
+        grid-area: left;
+      }
+      .keys .up {
+        grid-area: up;
+      }
+      .keys .down {
+        grid-area: down;
+      }
+      .keys .right {
+        grid-area: right;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div class="menu">
+      <button id="start" onclick="startGame()">
+        Start <span>(Space)</span>
+      </button>
+      <input
+        onchange="toggleInfinite(event)"
+        type="checkbox"
+        name="infinte"
+        id="infinite"
+      />
+      <label class="lbl" for="infinite">No Walls</label>
+      <select
+        onchange="setPlayers(event)"
+        name="numOfPLayers"
+        id="numOfPlayers"
+      >
+        <option value="1">1 Player</option>
+        <option value="2">2 Players</option>
+        <option value="3">3 Players</option>
+        <option value="4">4 Players</option>
+      </select>
+      <input
+        onchange="toggleFullscreen(event)"
+        type="checkbox"
+        name="fullscreen"
+        id="fullscreen"
+        checked="true"
+      />
+      <label class="lbl" for="fullscreen">Fullscreen</label>
+      <div class="players">
+        <div class="player green">
+          <span>Player 1</span>
+          <div class="keys">
+            <div class="left">←</div>
+            <div class="up">↑</div>
+            <div class="down">↓</div>
+            <div class="right">→</div>
+          </div>
+        </div>
+        <div class="player blue">
+          <span>Player 2</span>
+          <div class="keys">
+            <div class="left">A</div>
+            <div class="up">W</div>
+            <div class="down">S</div>
+            <div class="right">D</div>
+          </div>
+        </div>
+        <div class="player pink">
+          <span>Player 3</span>
+          <div class="keys">
+            <div class="left">J</div>
+            <div class="up">I</div>
+            <div class="down">K</div>
+            <div class="right">L</div>
+          </div>
+        </div>
+        <div class="player orange">
+          <span>Player 4</span>
+          <div class="keys">
+            <div class="left">4</div>
+            <div class="up">8</div>
+            <div class="down">5</div>
+            <div class="right">6</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./SnakeMultiplayer.js"></script>
+  </body>
 </html>
