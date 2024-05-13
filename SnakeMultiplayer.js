@@ -12,6 +12,7 @@ const Color = {
   RED: "#FF0800",
   PINK: "#FF80CE",
   ORANGE: "#FF781F",
+  GREY: "#CCCCCC",
 };
 Object.freeze(Color);
 
@@ -46,6 +47,9 @@ class Snake {
   color;
   eating = false;
   isDead = false;
+  toEat = 0;
+  superSpeed = 0;
+  invicibility = 0;
 
   constructor(position, direction, color) {
     this.color = color;
@@ -111,25 +115,42 @@ class Snake {
     }
   }
 
-  move(eat = false, singlePlayer = false) {
-    if (eat) {
-      this.eating = true;
-    }
+  addSuperSpeed(s) {
+    this.superSpeed = this.superSpeed + s;
+  }
+
+  addInvicibility(inv) {
+    this.invicibility = inv;
+  }
+
+  move(eat = 0, singlePlayer = false) {
+    
+    this.toEat = this.toEat + eat
+    this.invicibility = Math.max(this.invicibility - 1, 0) 
+
     if (this.resting == 0) {
       let newHead = this.nextPos();
       this.head = newHead;
       this.body.push(newHead);
       this.direction = this.nextDirection;
-      if (!this.eating) {
+      if (this.toEat == 0) {
         this.body.shift();
-      } else if (this.body.length % 6 == 0) {
-        this.speed = Math.max(0, this.speed - 1);
+      } else { 
+        this.toEat = this.toEat - 1;   
+        if (this.body.length % 15 == 0) {
+          this.speed = Math.max(0, this.speed - 1);
+        }
       }
-      this.eating = false;
       if (singlePlayer) {
         this.resting = this.speed;
       } else {
-        this.resting = this.baseSpeed - this.speed;
+        if(this.superSpeed) {
+          this.superSpeed = this.superSpeed - 1;
+          this.resting = 0;
+        } else {
+          this.resting = this.baseSpeed - this.speed;
+        }
+        
       }
 
       return true;
@@ -140,21 +161,162 @@ class Snake {
   }
 }
 
-class Apple {
+class Consumible {
   id;
   position;
-
+  superSpeed = 0;
+  eat = 0;
+  invicibility = 0;
+  
   constructor(position) {
     this.id = Math.random() * 100000000000000000;
     if (position instanceof Pos) {
       this.position = position;
     }
   }
+
+  draw(ctx, squareSize) {
+    ctx.beginPath();
+      ctx.arc(
+        this.position.x * squareSize + squareSize / 2,
+        this.position.y * squareSize + squareSize / 2,
+        squareSize / 2,
+        2 * Math.PI,
+        false
+      );
+      ctx.fillStyle = Color.GREY;
+      ctx.fill();
+  }
+}
+
+class Apple extends Consumible {
+
+  constructor(position) {
+    super(position)
+    this.eat = 1;
+  }
+
+  draw(ctx, squareSize) {
+    ctx.beginPath();
+      ctx.arc(
+        this.position.x * squareSize + squareSize / 2,
+        this.position.y * squareSize + squareSize / 2,
+        squareSize / 2,
+        2 * Math.PI,
+        false
+      );
+      ctx.fillStyle = Color.RED;
+      ctx.fill();
+  }
+  
+}
+
+class Pepper extends Consumible {
+
+  constructor(position) {
+    super(position)
+    this.eat = 1;
+    this.superSpeed = 150;
+  }
+
+  draw(ctx, squareSize) {
+      let squareX = this.position.x * squareSize;
+      let squareY = this.position.y * squareSize; 
+      
+      ctx.fillStyle = 'red';
+
+      ctx.save();
+      ctx.translate(squareX + squareSize * 1.15, squareY + squareSize * 0.25);
+      ctx.rotate(Math.PI / 2);
+
+      ctx.beginPath();
+      ctx.moveTo(5 - squareSize / 2, 25 - squareSize / 2);
+      ctx.quadraticCurveTo(15 - squareSize / 2, 10 - squareSize / 2, 25 - squareSize / 2, 25 - squareSize / 2);
+      ctx.lineTo(22 - squareSize / 2, 28 - squareSize / 2);
+      ctx.quadraticCurveTo(15 - squareSize / 2, 20 - squareSize / 2, 8 - squareSize / 2, 28 - squareSize / 2);
+      ctx.lineTo(5 - squareSize / 2, 25 - squareSize / 2);
+      ctx.fill();
+
+      ctx.restore();
+  }
+  
+}
+
+
+class Banana extends Consumible {
+
+  constructor(position) {
+    super(position)
+    this.eat = 1;
+    this.invicibility = 200;
+  }
+
+  draw(ctx, squareSize) {
+      let squareX = this.position.x * squareSize;
+      let squareY = this.position.y * squareSize;
+      
+      ctx.fillStyle = 'gold';
+
+      ctx.save();
+      ctx.translate(squareX - squareSize / 5, squareY + squareSize / 1.25);
+      ctx.rotate(Math.PI * 1.5);
+
+      ctx.beginPath();
+      ctx.moveTo(5 - squareSize / 2, 25 - squareSize / 2);
+      ctx.quadraticCurveTo(15 - squareSize / 2, 10 - squareSize / 2, 25 - squareSize / 2, 25 - squareSize / 2);
+      ctx.lineTo(22 - squareSize / 2, 28 - squareSize / 2);
+      ctx.quadraticCurveTo(15 - squareSize / 2, 20 - squareSize / 2, 8 - squareSize / 2, 28 - squareSize / 2);
+      ctx.lineTo(5 - squareSize / 2, 25 - squareSize / 2);
+      ctx.fill();
+
+      ctx.restore();
+  }
+  
+}
+
+
+class Watermelon extends Consumible {
+
+  constructor(position) {
+    super(position)
+    this.eat = 4;
+  }
+
+  draw(ctx, squareSize) {
+    ctx.save()
+
+    ctx.beginPath();
+    
+    ctx.translate(0, squareSize / 4)
+    ctx.arc(
+      this.position.x * squareSize + squareSize / 2,
+      this.position.y * squareSize + squareSize / 2,
+      squareSize / 2,
+      Math.PI,
+      false
+    );
+    ctx.fillStyle = Color.GREEN;
+    ctx.fill();
+
+    ctx.beginPath()
+
+    ctx.arc(
+      this.position.x * squareSize + squareSize / 2,
+      this.position.y * squareSize + squareSize / 2,
+      squareSize / 3,
+      Math.PI,
+      false
+    );
+    ctx.fillStyle = Color.RED;
+    ctx.fill();
+    ctx.restore()
+  }
+  
 }
 
 class Game {
   snakes = [];
-  apples = [];
+  consumibles = [];
   isInfinite = false;
   numOfPlayers = 1;
   isFullscreen = true;
@@ -166,7 +328,7 @@ class Game {
   cols;
   squareSize = 20;
   frameTime = 50; //Max 40fps
-  appleInterval = 100;
+  consumibleInterval = 100;
   input2;
   pontuation = [0, 0];
   score = 0;
@@ -213,7 +375,7 @@ class Game {
 
   setup() {
     this.snakes = [];
-    this.apples = [];
+    this.consumibles = [];
     this.snakesCollided = [];
 
     if (this.pontuation.length != this.numOfPlayers) {
@@ -227,7 +389,9 @@ class Game {
       this.addSnake(snakeColors[i]);
     }
 
-    this.addApple();
+    this.draw()
+
+    this.addConsumible();
   }
 
   setInfinite(value) {
@@ -283,8 +447,8 @@ class Game {
         }
       }
 
-      for (let apple in this.apples) {
-        if (this.apples[apple].position.equals(pos)) {
+      for (let consumible in this.consumibles) {
+        if (this.consumibles[consumible].position.equals(pos)) {
           invalid = true;
         }
       }
@@ -292,7 +456,7 @@ class Game {
     this.snakes.push(new Snake(pos, this.getBestStartDirection(pos), color));
   }
 
-  addApple() {
+  addConsumible() {
     let invalid = true;
     let pos;
     while (invalid) {
@@ -309,14 +473,24 @@ class Game {
         }
       }
 
-      for (let apple in this.apples) {
-        if (this.apples[apple].position.equals(pos)) {
+      for (let consumible in this.consumibles) {
+        if (this.consumibles[consumible].position.equals(pos)) {
           invalid = true;
         }
       }
     }
+    
 
-    this.apples.push(new Apple(pos));
+    let newFruit = Math.random() * 10000
+
+    if (newFruit < 7000)
+      this.consumibles.push(new Apple(pos));
+    else if (newFruit < 8000)
+      this.consumibles.push(new Banana(pos));
+    else if (newFruit < 9000)
+      this.consumibles.push(new Watermelon(pos));
+    else 
+      this.consumibles.push(new Pepper(pos));
   }
 
   clear() {
@@ -335,20 +509,21 @@ class Game {
             this.squareSize,
             this.squareSize
           );
+
+          if(this.snakes[s].invicibility) {
+            this.ctx.fillStyle = 'gold';
+            this.ctx.fillRect(
+              this.snakes[s].body[b].x * this.squareSize + this.squareSize * 0.25,
+              this.snakes[s].body[b].y * this.squareSize + this.squareSize * 0.25,
+              this.squareSize * 0.5,
+              this.squareSize * 0.5
+            );
+          }
         }
       }
     }
-    for (let a in this.apples) {
-      this.ctx.beginPath();
-      this.ctx.arc(
-        this.apples[a].position.x * this.squareSize + this.squareSize / 2,
-        this.apples[a].position.y * this.squareSize + this.squareSize / 2,
-        this.squareSize / 2,
-        2 * Math.PI,
-        false
-      );
-      this.ctx.fillStyle = Color.RED;
-      this.ctx.fill();
+    for (let a in this.consumibles) {
+      this.consumibles[a].draw(this.ctx, this.squareSize)
     }
   }
 
@@ -442,97 +617,102 @@ class Game {
   }
 
   iterate() {
-    let applesToRemove = [];
-    let ate;
+    let consumibleToRemove = [];
+    let ate = 0;
+
     for (let s in this.snakes) {
       if (!this.snakes[s].isDead) {
         if (!this.snakes[s].nextPos().equals(this.snakes[s].head)) {
-          for (let a in this.apples) {
-            if (this.apples[a].position.equals(this.snakes[s].nextPos())) {
-              applesToRemove.push(this.apples[a].id);
-              ate = true;
+          for (let a in this.consumibles) {
+            if (this.consumibles[a].position.equals(this.snakes[s].nextPos())) {
+              consumibleToRemove.push(this.consumibles[a].id);
+              ate = this.consumibles[a].eat;
+              this.snakes[s].addSuperSpeed(this.consumibles[a].superSpeed);
+              this.snakes[s].addInvicibility(this.consumibles[a].invicibility);
             }
           }
         }
         this.snakes[s].move(ate, this.numOfPlayers == 1);
-        ate = false;
+        ate = 0;
       }
     }
-    if (applesToRemove.length > 0) {
-      for (let a in this.apples) {
-        if (applesToRemove.includes(this.apples[a].id)) {
-          this.apples.splice(a, 1);
+    if (consumibleToRemove.length > 0) {
+      for (let a in this.consumibles) {
+        if (consumibleToRemove.includes(this.consumibles[a].id)) {
+          this.consumibles.splice(a, 1);
           if (this.numOfPlayers == 1) {
-            this.addApple();
+            this.addConsumible();
           }
         }
       }
     }
 
     if (this.numOfPlayers > 1) {
-      if (this.appleInterval == 0) {
-        this.addApple();
-        this.appleInterval = 100;
+      if (this.consumibleInterval == 0) {
+        this.addConsumible();
+        this.consumibleInterval = 100;
       } else {
-        this.appleInterval--;
+        this.consumibleInterval--;
       }
     }
 
     //check collisions
     for (let s in this.snakes) {
-      if (!this.snakes[s].isDead) {
-        //colide with itself
-        for (let p in this.snakes[s].body.slice(
-          0,
-          this.snakes[s].body.length - 2
-        )) {
-          if (this.snakes[s].body[p].equals(this.snakes[s].head)) {
-            if (!this.snakesCollided.includes(s)) {
-              this.snakesCollided.push(s);
+      if(this.snakes[s].invicibility == 0) {
+        if (!this.snakes[s].isDead) {
+          //colide with itself
+          for (let p in this.snakes[s].body.slice(
+            0,
+            this.snakes[s].body.length - 2
+          )) {
+            if (this.snakes[s].body[p].equals(this.snakes[s].head)) {
+              if (!this.snakesCollided.includes(s)) {
+                this.snakesCollided.push(s);
+              }
             }
           }
-        }
-
-        //collide with other snake
-
-        for (let o in this.snakes) {
-          if (!this.snakes[o].isDead) {
-            if (o != s) {
-              if (this.snakes[o].hasBody(this.snakes[s].head)) {
-                if (this.snakes[s].head.equals(this.snakes[o].head)) {
-                  if (!this.snakesCollided.includes(o)) {
-                    this.snakesCollided.push(o);
+  
+          //collide with other snake
+  
+          for (let o in this.snakes) {
+            if (!this.snakes[o].isDead) {
+              if (o != s) {
+                if (this.snakes[o].hasBody(this.snakes[s].head)) {
+                  if (this.snakes[s].head.equals(this.snakes[o].head)) {
+                    if (!this.snakesCollided.includes(o)) {
+                      this.snakesCollided.push(o);
+                    }
                   }
-                }
-                if (!this.snakesCollided.includes(s)) {
-                  this.snakesCollided.push(s);
+                  if (!this.snakesCollided.includes(s)) {
+                    this.snakesCollided.push(s);
+                  }
                 }
               }
             }
           }
         }
+      }
 
-        //collide with wall
-        if (
-          this.snakes[s].head.x == -1 ||
-          this.snakes[s].head.y == -1 ||
-          this.snakes[s].head.x == this.cols ||
-          this.snakes[s].head.y == this.rows
-        ) {
-          if (!this.isInfinite) {
-            if (!this.snakesCollided.includes(s)) {
-              this.snakesCollided.push(s);
-            }
-          } else {
-            if (this.snakes[s].head.x < 0)
-              this.snakes[s].head.x = this.cols - 1;
-            if (this.snakes[s].head.y < 0)
-              this.snakes[s].head.y = this.rows - 1;
-            if (this.snakes[s].head.x > this.cols - 1)
-              this.snakes[s].head.x = 0;
-            if (this.snakes[s].head.y > this.rows - 1)
-              this.snakes[s].head.y = 0;
+      //collide with wall
+      if (
+        this.snakes[s].head.x == -1 ||
+        this.snakes[s].head.y == -1 ||
+        this.snakes[s].head.x == this.cols ||
+        this.snakes[s].head.y == this.rows
+      ) {
+        if (!this.isInfinite) {
+          if (!this.snakesCollided.includes(s)) {
+            this.snakesCollided.push(s);
           }
+        } else {
+          if (this.snakes[s].head.x < 0)
+            this.snakes[s].head.x = this.cols - 1;
+          if (this.snakes[s].head.y < 0)
+            this.snakes[s].head.y = this.rows - 1;
+          if (this.snakes[s].head.x > this.cols - 1)
+            this.snakes[s].head.x = 0;
+          if (this.snakes[s].head.y > this.rows - 1)
+            this.snakes[s].head.y = 0;
         }
       }
     }
