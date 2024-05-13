@@ -120,7 +120,7 @@ class Snake {
   }
 
   addInvicibility(inv) {
-    this.invicibility = inv;
+    this.invicibility = this.invicibility + inv;
   }
 
   move(eat = 0, singlePlayer = false) {
@@ -186,6 +186,7 @@ class Consumible {
       );
       ctx.fillStyle = Color.GREY;
       ctx.fill();
+      ctx.closePath();
   }
 }
 
@@ -207,6 +208,7 @@ class Apple extends Consumible {
       );
       ctx.fillStyle = Color.RED;
       ctx.fill();
+      ctx.closePath();
   }
   
 }
@@ -319,7 +321,7 @@ class Game {
   consumibles = [];
   isInfinite = false;
   numOfPlayers = 1;
-  isFullscreen = true;
+  isFullscreen = false;
   isLive = false;
   gameInterval;
   canvas;
@@ -483,11 +485,11 @@ class Game {
 
     let newFruit = Math.random() * 10000
 
-    if (newFruit < 7000)
+    if (newFruit < 7)
       this.consumibles.push(new Apple(pos));
-    else if (newFruit < 8000)
+    else if (newFruit < 5000)
       this.consumibles.push(new Banana(pos));
-    else if (newFruit < 9000)
+    else if (newFruit < 5001)
       this.consumibles.push(new Watermelon(pos));
     else 
       this.consumibles.push(new Pepper(pos));
@@ -510,7 +512,20 @@ class Game {
             this.squareSize
           );
 
-          if(this.snakes[s].invicibility) {
+          if(this.snakes[s].superSpeed > (this.snakes[s].body.length - b) * 10) {
+            this.ctx.beginPath();
+            this.ctx.arc(
+              this.snakes[s].body[b].x * this.squareSize + this.squareSize / 2,
+              this.snakes[s].body[b].y * this.squareSize + this.squareSize / 2,
+              this.squareSize / 2.5,
+              2 * Math.PI,
+              false
+            );
+            this.ctx.fillStyle = Color.RED;
+            this.ctx.fill();
+          }
+
+          if(this.snakes[s].invicibility > (this.snakes[s].body.length - b) * 10) {
             this.ctx.fillStyle = 'gold';
             this.ctx.fillRect(
               this.snakes[s].body[b].x * this.squareSize + this.squareSize * 0.25,
@@ -519,6 +534,8 @@ class Game {
               this.squareSize * 0.5
             );
           }
+
+          
         }
       }
     }
