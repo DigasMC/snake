@@ -485,11 +485,11 @@ class Game {
 
     let newFruit = Math.random() * 10000
 
-    if (newFruit < 7)
+    if (newFruit < 7000)
       this.consumibles.push(new Apple(pos));
-    else if (newFruit < 5000)
+    else if (newFruit < 8000)
       this.consumibles.push(new Banana(pos));
-    else if (newFruit < 5001)
+    else if (newFruit < 9000)
       this.consumibles.push(new Watermelon(pos));
     else 
       this.consumibles.push(new Pepper(pos));
