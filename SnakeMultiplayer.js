@@ -265,6 +265,7 @@ class Game {
   pontuation = [0, 0];
   score = 0;
   snakesCollided = [];
+  isPaused = false;
 
   constructor(numOfPlayers, isInfinite = false) {
     this.numOfPlayers = numOfPlayers;
@@ -502,6 +503,24 @@ class Game {
     document.getElementById("start").disabled = false;
     document.getElementById("numOfPlayers").disabled = false;
     document.getElementById("fullscreen").disabled = false;
+  }
+
+  pause() {
+    if(this.isPaused) {
+      let gm = this;
+      this.gameInterval = setInterval(function () {
+        gm.iterate();
+      }, this.frameTime);
+      this.isPaused = false;
+    } else if (this.isLive){
+      clearInterval(this.gameInterval);
+      this.isPaused = true;
+      this.ctx.textAlign = "center";
+      this.ctx.font = "30px Righteous";
+      this.ctx.fillStyle = "#000";
+      this.ctx.fillText("Paused", this.canvas.width / 2,
+      15 * this.squareSize)
+    }
   }
 
   endDraw(collisions) {
@@ -840,6 +859,9 @@ class Game {
             gm.snakes[3].nextDirection = Direction.RIGHT;
           }
         }
+        break;
+      case "escape":
+        gm.pause();
         break;
     }
   }
