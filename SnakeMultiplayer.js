@@ -198,17 +198,7 @@ class Apple extends Consumible {
   }
 
   draw(ctx, squareSize) {
-    ctx.beginPath();
-      ctx.arc(
-        this.position.x * squareSize + squareSize / 2,
-        this.position.y * squareSize + squareSize / 2,
-        squareSize / 2,
-        2 * Math.PI,
-        false
-      );
-      ctx.fillStyle = Color.RED;
-      ctx.fill();
-      ctx.closePath();
+    ctx.drawImage(document.getElementById("apple"), this.position.x * squareSize, this.position.y * squareSize)
   }
   
 }
@@ -222,24 +212,7 @@ class Pepper extends Consumible {
   }
 
   draw(ctx, squareSize) {
-      let squareX = this.position.x * squareSize;
-      let squareY = this.position.y * squareSize; 
-      
-      ctx.fillStyle = 'red';
-
-      ctx.save();
-      ctx.translate(squareX + squareSize * 1.15, squareY + squareSize * 0.25);
-      ctx.rotate(Math.PI / 2);
-
-      ctx.beginPath();
-      ctx.moveTo(5 - squareSize / 2, 25 - squareSize / 2);
-      ctx.quadraticCurveTo(15 - squareSize / 2, 10 - squareSize / 2, 25 - squareSize / 2, 25 - squareSize / 2);
-      ctx.lineTo(22 - squareSize / 2, 28 - squareSize / 2);
-      ctx.quadraticCurveTo(15 - squareSize / 2, 20 - squareSize / 2, 8 - squareSize / 2, 28 - squareSize / 2);
-      ctx.lineTo(5 - squareSize / 2, 25 - squareSize / 2);
-      ctx.fill();
-
-      ctx.restore();
+    ctx.drawImage(document.getElementById("pepper"), this.position.x * squareSize, this.position.y * squareSize)
   }
   
 }
@@ -254,24 +227,7 @@ class Banana extends Consumible {
   }
 
   draw(ctx, squareSize) {
-      let squareX = this.position.x * squareSize;
-      let squareY = this.position.y * squareSize;
-      
-      ctx.fillStyle = 'gold';
-
-      ctx.save();
-      ctx.translate(squareX - squareSize / 5, squareY + squareSize / 1.25);
-      ctx.rotate(Math.PI * 1.5);
-
-      ctx.beginPath();
-      ctx.moveTo(5 - squareSize / 2, 25 - squareSize / 2);
-      ctx.quadraticCurveTo(15 - squareSize / 2, 10 - squareSize / 2, 25 - squareSize / 2, 25 - squareSize / 2);
-      ctx.lineTo(22 - squareSize / 2, 28 - squareSize / 2);
-      ctx.quadraticCurveTo(15 - squareSize / 2, 20 - squareSize / 2, 8 - squareSize / 2, 28 - squareSize / 2);
-      ctx.lineTo(5 - squareSize / 2, 25 - squareSize / 2);
-      ctx.fill();
-
-      ctx.restore();
+    ctx.drawImage(document.getElementById("banana"), this.position.x * squareSize, this.position.y * squareSize)
   }
   
 }
@@ -285,33 +241,7 @@ class Watermelon extends Consumible {
   }
 
   draw(ctx, squareSize) {
-    ctx.save()
-
-    ctx.beginPath();
-    
-    ctx.translate(0, squareSize / 4)
-    ctx.arc(
-      this.position.x * squareSize + squareSize / 2,
-      this.position.y * squareSize + squareSize / 2,
-      squareSize / 2,
-      Math.PI,
-      false
-    );
-    ctx.fillStyle = Color.GREEN;
-    ctx.fill();
-
-    ctx.beginPath()
-
-    ctx.arc(
-      this.position.x * squareSize + squareSize / 2,
-      this.position.y * squareSize + squareSize / 2,
-      squareSize / 3,
-      Math.PI,
-      false
-    );
-    ctx.fillStyle = Color.RED;
-    ctx.fill();
-    ctx.restore()
+    ctx.drawImage(document.getElementById("watermelon"), this.position.x * squareSize, this.position.y * squareSize)
   }
   
 }

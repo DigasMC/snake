@@ -145,9 +145,17 @@
       .keys .right {
         grid-area: right;
       }
+
+      .sprite {
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <img src="./images/apple.png" id="apple" class="sprite" alt="apple">
+    <img src="./images/banana.png" id="banana" class="sprite" alt="banana">
+    <img src="./images/pepper.png" id="pepper" class="sprite" alt="pepper">
+    <img src="./images/watermelon.png" id="watermelon" class="sprite" alt="watermelon">
     <canvas id="canvas"></canvas>
     <div class="menu">
       <button id="start" onclick="startGame()">
