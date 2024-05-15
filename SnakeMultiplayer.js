@@ -159,6 +159,140 @@ class Snake {
       return false;
     }
   }
+
+  draw(ctx, squareSize) {
+    if (!this.isDead) {
+      for (let b in this.body) {
+        ctx.fillStyle = this.color;
+
+        if(b == this.body.length -1) {
+          ctx.beginPath();
+          ctx.arc(
+            this.body[b].x * squareSize + squareSize / 2,
+            this.body[b].y * squareSize + squareSize / 2,
+            squareSize / 2,
+            2 * Math.PI,
+            false
+          );
+          ctx.fillStyle = this.color;
+          ctx.fill();
+
+          switch (this.direction) {
+            case (Direction.DOWN):
+              ctx.fillRect(
+                this.body[b].x * squareSize,
+                this.body[b].y * squareSize,
+                squareSize,
+                squareSize / 2
+              );
+              break;
+            case (Direction.UP):
+              ctx.fillRect(
+                this.body[b].x * squareSize,
+                this.body[b].y * squareSize + squareSize / 2,
+                squareSize,
+                squareSize / 2
+              );
+              break;
+            case (Direction.RIGHT):
+              ctx.fillRect(
+                this.body[b].x * squareSize,
+                this.body[b].y * squareSize,
+                squareSize / 2,
+                squareSize
+              );
+              break;
+            case (Direction.LEFT):
+              ctx.fillRect(
+                this.body[b].x * squareSize + squareSize / 2 ,
+                this.body[b].y * squareSize,
+                squareSize / 2,
+                squareSize
+              );
+              break;
+          }
+        } else if (b == 0) {
+          ctx.beginPath()
+          if(this.body[Number(b) + 1].x > this.body[b].x) {
+            ctx.ellipse( //RIGHT 
+              this.body[b].x * squareSize + squareSize, //X
+              this.body[b].y * squareSize + squareSize / 2, //Y
+              squareSize / 2, //RADIUSX                                              
+              squareSize, //RADIUSY
+              Math.PI / 2, //ROTATION
+              0, //START ANGLE
+              Math.PI //END ANGLE
+            )
+          } else if (this.body[Number(b) + 1].x < this.body[b].x) {
+            ctx.ellipse( //LEFT 
+              this.body[b].x * squareSize, //X
+              this.body[b].y * squareSize + squareSize / 2, //Y
+              squareSize / 2, //RADIUSX                                              
+              squareSize, //RADIUSY
+              Math.PI * 1.5, //ROTATION
+              0, //START ANGLE
+              Math.PI //END ANGLE
+            )
+          } else if (this.body[Number(b) + 1].y < this.body[b].y) {
+            ctx.ellipse( //UP 
+              this.body[b].x * squareSize + squareSize / 2, //X
+              this.body[b].y * squareSize, //Y
+              squareSize / 2, //RADIUSX                                              
+              squareSize, //RADIUSY
+              Math.PI * 2, //ROTATION
+              0, //START ANGLE
+              Math.PI //END ANGLE
+            )
+          } else if (this.body[Number(b) + 1].y > this.body[b].y) {
+            ctx.ellipse( //DOWN 
+              this.body[b].x * squareSize + squareSize / 2, //X
+              this.body[b].y * squareSize + squareSize, //Y
+              squareSize / 2, //RADIUSX                                              
+              squareSize, //RADIUSY
+              Math.PI , //ROTATION
+              0, //START ANGLE
+              Math.PI //END ANGLE
+            )
+          }
+          ctx.fill()
+        } else {
+          ctx.fillRect(
+            this.body[b].x * squareSize,
+            this.body[b].y * squareSize,
+            squareSize,
+            squareSize
+          );
+        }
+
+        
+
+        if(this.superSpeed > (this.body.length - b) * 10) {
+          ctx.beginPath();
+          ctx.arc(
+            this.body[b].x * squareSize + squareSize / 2,
+            this.body[b].y * squareSize + squareSize / 2,
+            squareSize / 2.5,
+            2 * Math.PI,
+            false
+          );
+          ctx.fillStyle = Color.RED;
+          ctx.fill();
+        }
+
+        if(this.invicibility > (this.body.length - b) * 10) {
+          ctx.fillStyle = 'gold';
+          ctx.fillRect(
+            this.body[b].x * squareSize + squareSize * 0.25,
+            this.body[b].y * squareSize + squareSize * 0.25,
+            squareSize * 0.5,
+            squareSize * 0.5
+          );
+        }
+
+        
+      }
+    }
+  }
 }
 
 class Consumible {
@@ -433,42 +567,7 @@ class Game {
   draw() {
     this.clear();
     for (let s in this.snakes) {
-      if (!this.snakes[s].isDead) {
-        for (let b in this.snakes[s].body) {
-          this.ctx.fillStyle = this.snakes[s].color;
-          this.ctx.fillRect(
-            this.snakes[s].body[b].x * this.squareSize,
-            this.snakes[s].body[b].y * this.squareSize,
-            this.squareSize,
-            this.squareSize
-          );
-
-          if(this.snakes[s].superSpeed > (this.snakes[s].body.length - b) * 10) {
-            this.ctx.beginPath();
-            this.ctx.arc(
-              this.snakes[s].body[b].x * this.squareSize + this.squareSize / 2,
-              this.snakes[s].body[b].y * this.squareSize + this.squareSize / 2,
-              this.squareSize / 2.5,
-              2 * Math.PI,
-              false
-            );
-            this.ctx.fillStyle = Color.RED;
-            this.ctx.fill();
-          }
-
-          if(this.snakes[s].invicibility > (this.snakes[s].body.length - b) * 10) {
-            this.ctx.fillStyle = 'gold';
-            this.ctx.fillRect(
-              this.snakes[s].body[b].x * this.squareSize + this.squareSize * 0.25,
-              this.snakes[s].body[b].y * this.squareSize + this.squareSize * 0.25,
-              this.squareSize * 0.5,
-              this.squareSize * 0.5
-            );
-          }
-
-          
-        }
-      }
+      this.snakes[s].draw(this.ctx, this.squareSize)
     }
     for (let a in this.consumibles) {
       this.consumibles[a].draw(this.ctx, this.squareSize)
@@ -644,7 +743,7 @@ class Game {
             if (!this.snakes[o].isDead) {
               if (o != s) {
                 if (this.snakes[o].hasBody(this.snakes[s].head)) {
-                  if (this.snakes[s].head.equals(this.snakes[o].head)) {
+                  if (this.snakes[s].head.equals(this.snakes[o].head) && this.snakes[o].invicibility == 0) {
                     if (!this.snakesCollided.includes(o)) {
                       this.snakesCollided.push(o);
                     }
