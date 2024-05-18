@@ -4,158 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Righteous"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Righteous"/>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,300,0,0" />
     <title>Snake</title>
-    <style>
-      body {
-        margin: 0;
-        background: #fff;
-        font-family: "Righteous";
-      }
-
-      canvas {
-        border: solid 4px black;
-        background: #d7fcc1;
-      }
-
-      .menu {
-        display: flex;
-        padding: 0 10px;
-        height: 60px;
-        text-align: center;
-      }
-
-      .menu button,
-      select {
-        position: relative;
-        font-family: "Righteous";
-        margin: 5px 10px;
-        padding: 10px 30px;
-        font-size: 16px;
-        color: white;
-        background-color: #0055b3;
-        border-radius: 4px;
-        border: 2px solid #001833;
-      }
-
-      select {
-        padding: 10px;
-      }
-
-      .menu button:disabled,
-      select:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-
-      .menu button span {
-        font-size: 10px;
-        color: lightgrey;
-      }
-
-      input[type="checkbox"] {
-        appearance: none;
-        -ms-progress-appearance: none;
-        position: absolute;
-      }
-
-      input[type="checkbox"] + label {
-        position: relative;
-        font-family: "Righteous";
-        margin: 5px 10px;
-        padding: 10px 30px;
-        font-size: 16px;
-        line-height: 25px;
-        background-color: white;
-        color: #0055b3;
-        border-radius: 4px;
-        border: 2px solid #001833;
-      }
-
-      input[type="checkbox"]:checked + label {
-        color: white;
-        background-color: #0055b3;
-      }
-
-      input[type="checkbox"]:disabled + label {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-
-      label {
-        margin: 15px 0;
-      }
-
-      label + label {
-        margin-left: 15px;
-      }
-
-      .players {
-        display: flex;
-        flex-direction: row;
-        margin-left: auto;
-      }
-
-      .player {
-        margin-left: 20px;
-        color: white;
-      }
-
-      .player.green span {
-        background-color: #569527;
-      }
-      .player.blue span {
-        background-color: #004999;
-      }
-      .player.orange span {
-        background-color: #ff781f;
-      }
-      .player.pink span {
-        background-color: #ff80ce;
-      }
-
-      .keys {
-        display: grid;
-        grid-template-columns: 20px 20px 20px;
-        grid-template-columns: auto;
-        grid-template-areas: ". up ." "left down right";
-      }
-
-      .keys > div {
-        color: black;
-        width: 20px;
-        height: 20px;
-        line-height: 18px;
-        border: solid 1px grey;
-        background-color: white;
-      }
-
-      .key .keys > div {
-        width: 30px;
-        height: 30px;
-        line-height: 28px;
-      }
-
-      .keys .left {
-        grid-area: left;
-      }
-      .keys .up {
-        grid-area: up;
-      }
-      .keys .down {
-        grid-area: down;
-      }
-      .keys .right {
-        grid-area: right;
-      }
-
-      .sprite {
-        display: none;
-      }
-    </style>
   </head>
   <body>
     <img src="./images/apple.png" id="apple" class="sprite" alt="apple">
@@ -164,34 +16,6 @@
     <img src="./images/watermelon.png" id="watermelon" class="sprite" alt="watermelon">
     <canvas id="canvas"></canvas>
     <div class="menu">
-      <button id="start" onclick="startGame()">
-        Start <span>(Space)</span>
-      </button>
-      <input
-        onchange="toggleInfinite(event)"
-        type="checkbox"
-        name="infinte"
-        id="infinite"
-      />
-      <label class="lbl" for="infinite">No Walls</label>
-      <select
-        onchange="setPlayers(event)"
-        name="numOfPLayers"
-        id="numOfPlayers"
-      >
-        <option value="1">1 Player</option>
-        <option value="2">2 Players</option>
-        <option value="3">3 Players</option>
-        <option value="4">4 Players</option>
-      </select>
-      <input
-        onchange="toggleFullscreen(event)"
-        type="checkbox"
-        name="fullscreen"
-        id="fullscreen"
-        checked="true"
-      />
-      <label class="lbl" for="fullscreen">Fullscreen</label>
       <div class="players">
         <div class="key">
           <span>Pause</span>
@@ -234,6 +58,122 @@
             <div class="down">5</div>
             <div class="right">6</div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div id="initModal" class="modal show">
+      <div class="modal-header">
+        <h2>Snake</h2>
+      </div>
+      <div class="modal-content">
+        <div>
+          <div>Choose how many players</div>
+          <div class="space-top">
+            <button id="player-1" value="1" onclick="setPlayers(1)" class="btn-menu square btn-player selected">1</button>
+            <button id="player-2" value="2" onclick="setPlayers(2)" class="btn-menu square btn-player">2</button>
+            <button id="player-3" value="3" onclick="setPlayers(3)" class="btn-menu square btn-player">3</button>
+            <button id="player-4" value="4" onclick="setPlayers(4)" class="btn-menu square btn-player">4</button>
+          </div>
+        </div>
+        <div class="space-top-l">
+          <div>Map borders</div>
+          <div class="space-top">
+            <button id="border-solid" onclick="setInfinite(false)" class="btn-menu btn-borders selected">
+              <span class="material-symbols-outlined">
+              square
+              </span>
+              Solid
+            </button>
+            <button id="border-infinite" onclick="setInfinite(true)" class="btn-menu btn-borders">
+              <span class="material-symbols-outlined">
+                select
+              </span>
+              Infinite
+            </button>
+          </div>
+        </div>
+        <div class="space-top-l">
+          <div>Map size</div>
+          <div class="space-top">
+            <button id="map-square" onclick="setFullscreen(false)" class="btn-menu btn-map selected">
+              <span class="material-symbols-outlined">
+              crop_free
+              </span>
+              Square
+            </button>
+            <button id="map-fullscreen" onclick="setFullscreen(true)" class="btn-menu btn-map">
+              <span class="material-symbols-outlined">
+                pageless
+              </span>
+              Fullscreen
+            </button>
+          </div>
+        </div>
+        <div class="space-top-xl">
+          <button id="start" class="btn-menu" onclick="startGame()">
+            <span class="material-symbols-outlined">
+              play_arrow
+            </span>
+            <span>Play</span>
+            <small>(space)</small>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="pauseModal" class="modal">
+      <div class="modal-header">
+        <h2>Pause</h2>
+      </div>
+      <div class="modal-content">
+        The game is paused. 
+        Click play or press space to continue.
+        <div class="space-top-xl">
+          <button id="stop" class="btn-menu" onclick="stopGame()">
+            <span class="material-symbols-outlined">
+              stop
+            </span>
+            <span>Stop</span>
+          </button>
+          <button id="unpause" class="btn-menu" onclick="unPause()">
+            <span class="material-symbols-outlined">
+              play_arrow
+            </span>
+            <span>Play</span>
+            <small>(space)</small>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="scoreModal" class="modal">
+      <div class="modal-header">
+        <h2>Score</h2>
+      </div>
+      <div class="modal-content">
+        <div>
+          <div id="winnerScore"></div>
+        </div>
+        <div class="space-top-l">
+          Round Scores:
+          <div id="roundScore" class="score"></div>
+        </div>
+        <div class="space-top-l">
+          Total Scores:
+          <div id="totalScore" class="score"></div>
+        </div>
+        <div class="space-top-xl">
+          <button id="stop" class="btn-menu" onclick="stopGame()">
+            <span class="material-symbols-outlined">
+              stop
+            </span>
+            <span>Stop</span>
+          </button>
+          <button id="unpause" class="btn-menu" onclick="startGame()">
+            <span class="material-symbols-outlined">
+              play_arrow
+            </span>
+            <span>Play</span>
+            <small>(space)</small>
+          </button>
         </div>
       </div>
     </div>

@@ -141,16 +141,16 @@ class Snake {
           this.speed = Math.max(0, this.speed - 1);
         }
       }
-      if (singlePlayer) {
-        this.resting = this.speed;
+      if(this.superSpeed) {
+        this.superSpeed = this.superSpeed - 1;
+        this.resting = 0;
       } else {
-        if(this.superSpeed) {
-          this.superSpeed = this.superSpeed - 1;
-          this.resting = 0;
+        if (singlePlayer) {
+          this.resting = this.speed;
         } else {
+          
           this.resting = this.baseSpeed - this.speed;
         }
-        
       }
 
       return true;
@@ -237,7 +237,7 @@ class Snake {
             ctx.ellipse( //UP 
               this.body[b].x * squareSize + squareSize / 2, //X
               this.body[b].y * squareSize, //Y
-              squareSize / 2, //RADIUSX                                              
+              squareSize / 2, //RADIUSX                                               
               squareSize, //RADIUSY
               Math.PI * 2, //ROTATION
               0, //START ANGLE
@@ -378,6 +378,16 @@ class Watermelon extends Consumible {
     ctx.drawImage(document.getElementById("watermelon"), this.position.x * squareSize, this.position.y * squareSize)
   }
   
+}
+
+class Player {
+  color;
+  name;
+
+
+  constructor(name = "Default Player") {
+    this.name = name;
+  }
 }
 
 class Game {
@@ -579,17 +589,13 @@ class Game {
     var gm = this;
     this.isLive = true;
     clearInterval(this.gameInterval);
+    this.gameInterval = undefined;
 
     if (this.numOfPlayers == 1) {
       this.frameTime = 35;
     } else {
       this.frameTime = 50;
     }
-
-    document.getElementById("infinite").disabled = true;
-    document.getElementById("start").disabled = true;
-    document.getElementById("numOfPlayers").disabled = true;
-    document.getElementById("fullscreen").disabled = true;
     this.gameInterval = setInterval(function () {
       gm.iterate();
     }, this.frameTime);
@@ -597,11 +603,9 @@ class Game {
 
   stop() {
     this.isLive = false;
+    this.isPaused = false;
     clearInterval(this.gameInterval);
-    document.getElementById("infinite").disabled = false;
-    document.getElementById("start").disabled = false;
-    document.getElementById("numOfPlayers").disabled = false;
-    document.getElementById("fullscreen").disabled = false;
+    this.gameInterval = undefined;
   }
 
   pause() {
@@ -611,74 +615,31 @@ class Game {
         gm.iterate();
       }, this.frameTime);
       this.isPaused = false;
+      closePauseModal();
     } else if (this.isLive){
       clearInterval(this.gameInterval);
-      this.isPaused = true;
-      this.ctx.textAlign = "center";
-      this.ctx.font = "30px Righteous";
-      this.ctx.fillStyle = "#000";
-      this.ctx.fillText("Paused", this.canvas.width / 2,
-      15 * this.squareSize)
+      this.gameInterval = undefined;
+      this.isPaused = true ;
+      openPauseModal();
     }
   }
 
   endDraw(collisions) {
     this.stop();
-    this.ctx.textAlign = "center";
-    this.ctx.font = "30px Righteous";
-    this.ctx.fillStyle = "#000";
     for (let i in this.snakes) {
       this.pontuation[i] = this.pontuation[i] + this.snakes[i].body.length - 2;
     }
-
-    if (this.numOfPlayers == 1) {
-      this.ctx.fillText(
-        `Game ended with ${this.snakes[0].body.length} points.`,
-        this.canvas.width / 2,
-        15 * this.squareSize
-      );
-    } else {
-      if (collisions.length == this.numOfPlayers) {
-        this.ctx.fillText("Draw", this.canvas.width / 2, 15 * this.squareSize);
-        this.ctx.fillText(
-          `Score: `,
-          this.canvas.width / 2,
-          17 * this.squareSize
-        );
-        for (let i in this.snakes) {
-          this.ctx.fillText(
-            `Player ${Number(i) + 1}: ${this.pontuation[i]}`,
-            this.canvas.width / 2,
-            (19 + i * 2) * this.squareSize
-          );
-        }
-      } else {
-        let winner;
+    let winner = -1;
+    if (this.numOfPlayers != 1) {
         for (let i in this.pontuation) {
           if (!collisions.includes(i)) {
             winner = i;
           }
         }
         this.pontuation[winner] = this.pontuation[winner] + 5;
-        this.ctx.fillText(
-          `Player ${Number(winner) + 1} won!`,
-          this.canvas.width / 2,
-          15 * this.squareSize
-        );
-        this.ctx.fillText(
-          `Score: `,
-          this.canvas.width / 2,
-          17 * this.squareSize
-        );
-        for (let i in this.snakes) {
-          this.ctx.fillText(
-            `Player ${Number(i) + 1}: ${this.pontuation[i]}`,
-            this.canvas.width / 2,
-            (19 + i * 2) * this.squareSize
-          );
-        }
-      }
     }
+
+    showScores(this.pontuation, this.snakes, winner)
   }
 
   iterate() {
@@ -715,7 +676,7 @@ class Game {
     if (this.numOfPlayers > 1) {
       if (this.consumibleInterval == 0) {
         this.addConsumible();
-        this.consumibleInterval = 100;
+        this.consumibleInterval = 70;
       } else {
         this.consumibleInterval--;
       }
@@ -794,11 +755,6 @@ class Game {
 
   input(e, gm) {
     switch (e.key.toLowerCase()) {
-      case " ":
-        if (!this.isLive) {
-          this.start();
-        }
-        break;
       case "arrowup":
         if (gm.snakes.length > 0) {
           if (
@@ -968,35 +924,154 @@ class Game {
 
 const gameManager = new Game(1, false);
 
+
 window.addEventListener("resize", function (event) {
   gameManager.resize();
 });
 
 window.addEventListener("keydown", function (event) {
-  gameManager.input(event, gameManager);
+  if(event.key.toLowerCase() == " ") {
+    if(gameManager.isPaused) {
+      gameManager.pause();
+    } else {
+      if(!gameManager.isLive) {
+        startGame();
+      }
+    }
+  } else {
+    gameManager.input(event, gameManager);
+  }
 });
 
-function toggleInfinite(e) {
+function setInfinite(val) {
   if (!gameManager.isLive) {
-    gameManager.setInfinite(e.target.checked);
+    gameManager.setInfinite(val);
+    document.querySelector(".btn-borders.selected").classList.remove("selected")
+    if(!val) {
+      document.getElementById("border-solid").classList.add("selected")
+    } else {
+      document.getElementById("border-infinite").classList.add("selected")
+    }
   }
 }
 
 function startGame() {
   if (!gameManager.isLive) {
     gameManager.start();
+    closeInitModal();
+    closePauseModal();
+    closeScoreModal();
+  }
+}
+function unPause() {
+  if(gameManager.isPaused) {
+    gameManager.pause();
   }
 }
 
-function setPlayers(e) {
+function stopGame() {
+  gameManager.stop();
+  closePauseModal();
+  closeScoreModal();
+  openInitModal();
+}
+
+function setPlayers(val) {
   if (!gameManager.isLive) {
-    gameManager.numOfPlayers = e.target.value;
+    gameManager.numOfPlayers = val;
+    document.querySelector(".btn-player.selected").classList.remove("selected")
+    document.getElementById("player-" + val).classList.add("selected")
   }
 }
 
-function toggleFullscreen(e) {
+function setFullscreen(val) {
   if (!gameManager.isLive) {
-    gameManager.isFullscreen = e.target.checked;
+    gameManager.isFullscreen = val;
     gameManager.resize();
+    document.querySelector(".btn-map.selected").classList.remove("selected")
+    if(!val) {
+      document.getElementById("map-square").classList.add("selected")
+    } else {
+      document.getElementById("map-fullscreen").classList.add("selected")
+    }
   }
+}
+
+function closeInitModal() {
+  document.getElementById("initModal").classList.remove("show")
+}
+
+function openInitModal() {
+  document.getElementById("initModal").classList.add("show")
+}
+
+
+function closePauseModal() {
+  document.getElementById("pauseModal").classList.remove("show")
+}
+
+function openPauseModal() {
+  document.getElementById("pauseModal").classList.add("show")
+}
+
+function closeScoreModal() {
+  document.getElementById("scoreModal").classList.remove("show")
+}
+
+function showScores(pontuation = [], snakes = [], winner) {
+  let roundScore = document.getElementById("roundScore");
+  let totalScore = document.getElementById("totalScore");
+  let winnerScore = document.getElementById("winnerScore");
+
+  roundScore.innerHTML = "";
+  totalScore.innerHTML = "";
+  winnerScore.innerHTML = "";
+
+  let score = []
+
+  let winnerHTML = "";
+
+  if(winner == -1) {
+    winnerHTML = "This game ended in a draw!"
+  } else {
+    winnerHTML = `The winner of this round is <div class="player-color" style="background-color: ${snakes[winner].color};"></div> Player ${Number(winner) + 1}!! Congrats!`
+  }
+
+  winnerScore.innerHTML = winnerHTML;
+
+  for(let i in snakes) {
+    score.push({
+      color: snakes[i].color,
+      player: Number(i) + 1,
+      total: pontuation[i] || 0,
+      round: snakes[i].body.length - 2 + (Number(winner) == Number(i) ? 5 : 0)
+    })
+  }
+
+  let roundHTML = "<table><tr><th>Player</th><th>Score</th></tr>"
+
+  score.sort((a, b) => b.round - a.round)
+
+  for(let i in score) {
+    roundHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>Player ${score[i].player}</td><td>${score[i].round}</td></tr>`
+  }
+
+  roundHTML += "</table>"
+
+  let totalHTML = "<table><tr><th>Player</th><th>Score</th></tr>"
+
+  score.sort((a, b) => b.total - a.total)
+
+  for(let i in score) {
+    totalHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>Player ${score[i].player}</td><td>${score[i].total}</td></tr>`
+  }
+
+  totalHTML += "</table>"
+
+  roundScore.innerHTML = roundHTML
+  totalScore.innerHTML = totalHTML
+
+
+  document.getElementById("scoreModal").classList.add("show")
+
 }
