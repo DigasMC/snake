@@ -83,13 +83,20 @@ label + label {
 
 .players {
   display: flex;
-  flex-direction: row;
-  margin-left: auto;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .player {
-  margin-left: 20px;
   color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.player span {
+  padding: 5px 10px;
+  border-radius: 15px;
 }
 
 .player.green span {
@@ -108,8 +115,10 @@ label + label {
 .keys {
   display: grid;
   grid-template-columns: 20px 20px 20px;
-  grid-template-columns: auto;
   grid-template-areas: ". up ." "left down right";
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .keys > div {

@@ -422,7 +422,7 @@ class Game {
 
   resize() {
     let screenWidth = window.innerWidth - 8;
-    let screenHeight = window.innerHeight - 78;
+    let screenHeight = window.innerHeight - 8;
     let extraWidth = screenWidth % this.squareSize;
     let extraHeight = screenHeight % this.squareSize;
 
@@ -961,6 +961,7 @@ function startGame() {
     closeInitModal();
     closePauseModal();
     closeScoreModal();
+    closeControlsModal();
   }
 }
 function unPause() {
@@ -1005,13 +1006,20 @@ function openInitModal() {
   document.getElementById("initModal").classList.add("show")
 }
 
-
 function closePauseModal() {
   document.getElementById("pauseModal").classList.remove("show")
 }
 
 function openPauseModal() {
   document.getElementById("pauseModal").classList.add("show")
+}
+
+function closeControlsModal() {
+  document.getElementById("controlsModal").classList.remove("show")
+}
+
+function openControlsModal() {
+  document.getElementById("controlsModal").classList.add("show")
 }
 
 function closeScoreModal() {
