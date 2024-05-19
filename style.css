@@ -14,7 +14,6 @@ canvas {
 .menu {
   display: flex;
   padding: 0 10px;
-  height: 60px;
   text-align: center;
 }
 
@@ -268,4 +267,12 @@ label + label {
   border-radius: 15px;
   display: inline-block;
   margin-right: 5px;
+}
+
+.winner-podium {
+  text-align: center;
+}
+
+.winner-podium svg {
+  max-width: min(250px, 50vw);
 }

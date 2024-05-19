@@ -456,6 +456,11 @@ class Game {
     this.rows = this.canvas.height / this.squareSize;
   }
 
+  setPlayers(numPlayers) {
+    this.numOfPlayers = numPlayers
+    this.setup()
+  }
+
   setup() {
     this.snakes = [];
     this.consumibles = [];
@@ -630,7 +635,7 @@ class Game {
     }
   }
 
-  endDraw(collisions) {
+  endDraw() {
     this.stop();
     for (let i in this.snakes) {
       this.pontuation[i] = this.pontuation[i] + this.snakes[i].body.length - 2;
@@ -638,11 +643,13 @@ class Game {
     let winner = -1;
     if (this.numOfPlayers != 1) {
         for (let i in this.pontuation) {
-          if (!collisions.includes(i)) {
+          if (!this.snakesCollided.includes(i)) {
             winner = i;
           }
         }
-        this.pontuation[winner] = this.pontuation[winner] + 5;
+        if(winner != -1) {
+          this.pontuation[winner] = this.pontuation[winner] + 5;
+        }
     }
 
     showScores(this.pontuation, this.snakes, winner)
@@ -985,9 +992,25 @@ function stopGame() {
 
 function setPlayers(val) {
   if (!gameManager.isLive) {
-    gameManager.numOfPlayers = val;
+    gameManager.setPlayers(val);
     document.querySelector(".btn-player.selected").classList.remove("selected")
     document.getElementById("player-" + val).classList.add("selected")
+  }
+}
+
+function updateColors() {
+  for(let i in gameManager.snakes) {
+    let pNum = Number(i) + 1
+    Array.from(document.querySelectorAll(`#player-${pNum}-snake .body`)).forEach(el => el.style.fill = gameManager.snakes[i].color + "aa")
+    Array.from(document.querySelectorAll(`#player-${pNum}-snake .body-details`)).forEach(el => el.style.fill = gameManager.snakes[i].color)
+  }
+}
+
+function updateControls() {
+  Array.from(document.querySelectorAll(`.player`)).forEach(el => el.style.display = "none")
+  for(let i in gameManager.snakes) {
+    let pNum = Number(i) + 1
+    document.getElementById(`player-${pNum}-controls`).style.display = "flex";
   }
 }
 
@@ -1025,6 +1048,8 @@ function closeControlsModal() {
 }
 
 function openControlsModal() {
+  updateColors();
+  updateControls();
   document.getElementById("controlsModal").classList.add("show")
 }
 
@@ -1047,8 +1072,12 @@ function showScores(pontuation = [], snakes = [], winner) {
 
   if(winner == -1) {
     winnerHTML = "This game ended in a draw!"
+    document.getElementById("player-winner-snake").style.display = "none"
   } else {
     winnerHTML = `The winner of this round is <div class="player-color" style="background-color: ${snakes[winner].color};"></div> Player ${Number(winner) + 1}!! Congrats!`
+    document.getElementById("player-winner-snake").style.display = "inline"
+    Array.from(document.querySelectorAll(`#player-winner-snake .body`)).forEach(el => el.style.fill = gameManager.snakes[winner].color + "aa")
+    Array.from(document.querySelectorAll(`#player-winner-snake .body-details`)).forEach(el => el.style.fill = gameManager.snakes[winner].color)
   }
 
   winnerScore.innerHTML = winnerHTML;
