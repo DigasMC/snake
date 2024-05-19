@@ -446,6 +446,12 @@ class Game {
       this.canvas.style.marginLeft = `${(screenWidth - value) / 2}px`;
     }
 
+    if (extraHeight % 2 == 0) {
+      this.canvas.style.marginTop = `${extraHeight / 2}px`;
+    } else {
+      this.canvas.style.marginTop = `${(extraHeight - 1) / 2}px`;
+    }
+
     this.cols = this.canvas.width / this.squareSize;
     this.rows = this.canvas.height / this.squareSize;
   }
