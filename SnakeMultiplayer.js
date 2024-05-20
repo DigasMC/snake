@@ -16,8 +16,6 @@ const Color = {
 };
 Object.freeze(Color);
 
-const snakeColors = [Color.GREEN, Color.BLUE, Color.PINK, Color.ORANGE];
-
 class Pos {
   x;
   y;
@@ -410,6 +408,8 @@ class Game {
   score = 0;
   snakesCollided = [];
   isPaused = false;
+  colors = [Color.GREEN, Color.BLUE, Color.PINK, Color.ORANGE]
+  names = ["Player 1", "Player 2", "Player 3", "Player 4"]
 
   constructor(numOfPlayers, isInfinite = false) {
     this.numOfPlayers = numOfPlayers;
@@ -474,7 +474,7 @@ class Game {
     }
 
     for (let i = 0; i < this.numOfPlayers; i++) {
-      this.addSnake(snakeColors[i]);
+      this.addSnake(this.colors[i]);
     }
 
     this.draw()
@@ -542,6 +542,17 @@ class Game {
       }
     }
     this.snakes.push(new Snake(pos, this.getBestStartDirection(pos), color));
+  }
+
+  setColor(idx, color) {
+    this.colors[idx] = color;
+    this.snakes[idx].color = color;
+    this.clear();
+    this.draw();
+  }
+
+  setName(idx, name) {
+    this.names[idx] = name;
   }
 
   addConsumible() {
@@ -943,7 +954,8 @@ window.addEventListener("resize", function (event) {
 });
 
 window.addEventListener("keydown", function (event) {
-  if(event.key.toLowerCase() == " ") {
+  console.log(event.target)
+  if(event.key.toLowerCase() == " " && event.target.tagName !== "INPUT") {
     if(gameManager.isPaused) {
       gameManager.pause();
     } else {
@@ -1003,6 +1015,14 @@ function updateColors() {
     let pNum = Number(i) + 1
     Array.from(document.querySelectorAll(`#player-${pNum}-snake .body`)).forEach(el => el.style.fill = gameManager.snakes[i].color + "aa")
     Array.from(document.querySelectorAll(`#player-${pNum}-snake .body-details`)).forEach(el => el.style.fill = gameManager.snakes[i].color)
+    document.getElementById(`player-${Number(i) + 1}-color-input`).setAttribute("value", gameManager.snakes[i].color)
+    document.getElementById(`player-${Number(i) + 1}-color-input`).style.backgroundColor = gameManager.snakes[i].color
+  }
+}
+
+function updateNames() {
+  for(let i in gameManager.snakes) {
+    document.getElementById(`player-${Number(i) + 1}-name-input`).setAttribute("value", gameManager.names[i])
   }
 }
 
@@ -1049,6 +1069,7 @@ function closeControlsModal() {
 
 function openControlsModal() {
   updateColors();
+  updateNames();
   updateControls();
   document.getElementById("controlsModal").classList.add("show")
 }
@@ -1074,7 +1095,7 @@ function showScores(pontuation = [], snakes = [], winner) {
     winnerHTML = "This game ended in a draw!"
     document.getElementById("player-winner-snake").style.display = "none"
   } else {
-    winnerHTML = `The winner of this round is <div class="player-color" style="background-color: ${snakes[winner].color};"></div> Player ${Number(winner) + 1}!! Congrats!`
+    winnerHTML = `The winner of this round is <div class="player-color" style="background-color: ${snakes[winner].color};"></div> ${gameManager.names[winner]}!! Congrats!`
     document.getElementById("player-winner-snake").style.display = "inline"
     Array.from(document.querySelectorAll(`#player-winner-snake .body`)).forEach(el => el.style.fill = gameManager.snakes[winner].color + "aa")
     Array.from(document.querySelectorAll(`#player-winner-snake .body-details`)).forEach(el => el.style.fill = gameManager.snakes[winner].color)
@@ -1085,7 +1106,7 @@ function showScores(pontuation = [], snakes = [], winner) {
   for(let i in snakes) {
     score.push({
       color: snakes[i].color,
-      player: Number(i) + 1,
+      player: gameManager.names[i],
       total: pontuation[i] || 0,
       round: snakes[i].body.length - 2 + (Number(winner) == Number(i) ? 5 : 0)
     })
@@ -1096,7 +1117,7 @@ function showScores(pontuation = [], snakes = [], winner) {
   score.sort((a, b) => b.round - a.round)
 
   for(let i in score) {
-    roundHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>Player ${score[i].player}</td><td>${score[i].round}</td></tr>`
+    roundHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>${score[i].player}</td><td>${score[i].round}</td></tr>`
   }
 
   roundHTML += "</table>"
@@ -1106,7 +1127,7 @@ function showScores(pontuation = [], snakes = [], winner) {
   score.sort((a, b) => b.total - a.total)
 
   for(let i in score) {
-    totalHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>Player ${score[i].player}</td><td>${score[i].total}</td></tr>`
+    totalHTML += `<tr><td><div class="player-color" style="background-color: ${score[i].color}"></div>${score[i].player}</td><td>${score[i].total}</td></tr>`
   }
 
   totalHTML += "</table>"
@@ -1117,4 +1138,19 @@ function showScores(pontuation = [], snakes = [], winner) {
 
   document.getElementById("scoreModal").classList.add("show")
 
+}
+
+function setPlayerColor(e, player) {
+  let idx = player - 1;
+  let color = e.target.value;
+
+  gameManager.setColor(idx, color);
+  updateColors()
+}
+
+function setPlayerName(e, player) {
+  let idx = player - 1;
+  let name = e.target.value;
+
+  gameManager.setName(idx, name);
 }

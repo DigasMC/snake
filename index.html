@@ -408,7 +408,7 @@
       <div class="modal-content">
         <div class="menu">
           <div class="players">
-            <div id="player-1-controls" class="player green">
+            <div id="player-1-controls" class="player">
               <svg version="1.1" id="player-1-snake" class="snake-sprite" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 841.9 595.3" style="enable-background:new 0 0 841.9 595.3;" xml:space="preserve">
               <style type="text/css">
@@ -673,8 +673,14 @@
                 <path class="st0" d="M379,212.3c-0.6,0-0.9-0.2-0.8-0.8C378.8,211.4,379.4,211.4,379,212.3z"/>
               </g>
               </svg>
-
-              <span>Player 1</span>
+              <div class="input-container">
+                <label for="player-1-color-input">Color:</label>
+                <input onchange="setPlayerColor(event, 1)" type="color" name="player1" id="player-1-color-input">
+              </div>
+              <div class="input-container">
+                <label for="player-1-name">Name:</label>
+                <input onchange="setPlayerName(event, 1)" type="text" name="player1Name" id="player-1-name-input">
+              </div>
               <div class="keys">
                 <div class="left">←</div>
                 <div class="up">↑</div>
@@ -682,7 +688,7 @@
                 <div class="right">→</div>
               </div>
             </div>
-            <div id="player-2-controls" class="player blue">
+            <div id="player-2-controls" class="player">
               <svg version="1.1" id="player-2-snake" class="snake-sprite" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 841.9 595.3" style="enable-background:new 0 0 841.9 595.3;" xml:space="preserve">
               <style type="text/css">
@@ -947,7 +953,14 @@
                 <path class="st0" d="M379,212.3c-0.6,0-0.9-0.2-0.8-0.8C378.8,211.4,379.4,211.4,379,212.3z"/>
               </g>
               </svg>
-              <span>Player 2</span>
+              <div class="input-container">
+                <label for="player-2-color-input">Color:</label>
+                <input onchange="setPlayerColor(event, 2)" type="color" name="player2" id="player-2-color-input">
+              </div>
+              <div class="input-container">
+                <label for="player-2-name">Name:</label>
+                <input onchange="setPlayerName(event, 2)" type="text" name="player2Name" id="player-2-name-input">
+              </div>
               <div class="keys">
                 <div class="left">A</div>
                 <div class="up">W</div>
@@ -955,7 +968,7 @@
                 <div class="right">D</div>
               </div>
             </div>
-            <div id="player-3-controls" class="player pink">
+            <div id="player-3-controls" class="player">
               <svg version="1.1" id="player-3-snake" class="snake-sprite" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 841.9 595.3" style="enable-background:new 0 0 841.9 595.3;" xml:space="preserve">
               <style type="text/css">
@@ -1220,7 +1233,14 @@
                 <path class="st0" d="M379,212.3c-0.6,0-0.9-0.2-0.8-0.8C378.8,211.4,379.4,211.4,379,212.3z"/>
               </g>
               </svg>
-              <span>Player 3</span>
+              <div class="input-container">
+                <label for="player-3-color-input">Color:</label>
+                <input onchange="setPlayerColor(event, 3)" type="color" name="player3" id="player-3-color-input">
+              </div>
+              <div class="input-container">
+                <label for="player-3-name">Name:</label>
+                <input onchange="setPlayerName(event, 3)" type="text" name="player3Name" id="player-3-name-input">
+              </div>
               <div class="keys">
                 <div class="left">J</div>
                 <div class="up">I</div>
@@ -1228,7 +1248,7 @@
                 <div class="right">L</div>
               </div>
             </div>
-            <div id="player-4-controls" class="player orange">
+            <div id="player-4-controls" class="player">
               <svg version="1.1" id="player-4-snake" class="snake-sprite" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 841.9 595.3" style="enable-background:new 0 0 841.9 595.3;" xml:space="preserve">
               <style type="text/css">
@@ -1493,7 +1513,14 @@
                 <path class="st0" d="M379,212.3c-0.6,0-0.9-0.2-0.8-0.8C378.8,211.4,379.4,211.4,379,212.3z"/>
               </g>
               </svg>
-              <span>Player 4</span>
+              <div class="input-container">
+                <label for="player-4-color-input">Color:</label>
+                <input onchange="setPlayerColor(event, 4)" type="color" name="player4" id="player-4-color-input">
+              </div>
+              <div class="input-container">
+                <label for="player-4-name">Name:</label>
+                <input onchange="setPlayerName(event, 4)" type="text" name="player4Name" id="player-4-name-input">
+              </div>
               <div class="keys">
                 <div class="left">4</div>
                 <div class="up">8</div>

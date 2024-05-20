@@ -86,31 +86,71 @@ label + label {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  gap: 60px;
 }
 
 .player {
-  color: white;
   text-align: center;
   display: flex;
   flex-direction: column;
+  margin: auto;
 }
 
-.player span {
-  padding: 5px 10px;
-  border-radius: 15px;
+.player .input-container {
+  display: flex;
+  vertical-align: middle;
+  margin-top: 10px;
+  gap: 5px;
 }
 
-.player.green span {
-  background-color: #569527;
+.player .input-container label{
+  margin: 0;
 }
-.player.blue span {
-  background-color: #004999;
+
+.player .input-container input[type="color"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  padding: 0;
+  height: 20px;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  border: none;
 }
-.player.orange span {
-  background-color: #ff781f;
+
+
+.player .input-container input[type="text"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  padding: 0;
+  height: 20px;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  border-style: solid;
+  padding: 0 5px;
 }
-.player.pink span {
-  background-color: #ff80ce;
+
+.player ::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.player ::-webkit-color-swatch{
+  border: 0;
+  border-radius: 0;
+}
+
+.player ::-moz-color-swatch,
+.player ::-moz-focus-inner{
+  border: 0;
+}
+
+.player ::-moz-focus-inner{
+  padding: 0;
 }
 
 .keys {
