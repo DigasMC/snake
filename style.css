@@ -208,7 +208,7 @@ label + label {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  opacity: 0.3;
+  opacity: 0.2;
   display:flex;
   vertical-align: middle;
   text-align: center;
