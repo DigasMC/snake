@@ -1160,17 +1160,30 @@ var mc = new Hammer(document.body);
 
 // listen to events...
 mc.on("panleft swipeleft", function(ev) {
-  gameManager.input({key: "arrowleft"}, gameManager)
+  turnLeft() 
 });
 
 mc.on("panright swiperight", function(ev) {
-  gameManager.input({key: "arrowright"}, gameManager)
+  turnRight() 
 });
 
 mc.on("panup swipeup", function(ev) {
-  gameManager.input({key: "arrowup"}, gameManager)
+  turnUp() 
 });
 
 mc.on("pandown swipedown", function(ev) {
-  gameManager.input({key: "arrowdown"}, gameManager)
+  turnDown() 
 });
+
+function turnLeft() {
+  gameManager.input({key: "arrowleft"}, gameManager)
+}
+function turnRight() {
+  gameManager.input({key: "arrowright"}, gameManager)
+}
+function turnUp() {
+  gameManager.input({key: "arrowup"}, gameManager)
+}
+function turnDown() {
+  gameManager.input({key: "arrowdown"}, gameManager)
+}

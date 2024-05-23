@@ -15,18 +15,43 @@
     <img src="./images/pepper.png" id="pepper" class="sprite" alt="pepper">
     <img src="./images/watermelon.png" id="watermelon" class="sprite" alt="watermelon">
     <canvas id="canvas"></canvas>
+    <div class="input-container only-touch touch-controlers">
+      <span for="">Controls:</span>
+      <div class="keys">
+        <div class="left">
+          <span class="material-symbols-outlined">
+              keyboard_arrow_left
+          </span>
+        </div>
+        <div class="up">
+          <span class="material-symbols-outlined">
+              keyboard_arrow_up
+          </span>
+        </div>
+        <div class="down">
+          <span class="material-symbols-outlined">
+              keyboard_arrow_down
+          </span>
+        </div>
+        <div class="right">
+          <span class="material-symbols-outlined">
+              keyboard_arrow_right
+          </span>
+        </div>
+      </div>
+    </div>
     <div id="initModal" class="modal show">
       <div class="modal-header">
         <h2>Snake</h2>
       </div>
       <div class="modal-content">
-        <div>
+        <div class="hide-touch">
           <div>Choose how many players</div>
           <div class="space-top">
             <button id="player-1" value="1" onclick="setPlayers(1)" class="btn-menu square btn-player selected">1</button>
-            <button id="player-2" value="2" onclick="setPlayers(2)" class="btn-menu square btn-player hide-touch">2</button>
-            <button id="player-3" value="3" onclick="setPlayers(3)" class="btn-menu square btn-player hide-touch">3</button>
-            <button id="player-4" value="4" onclick="setPlayers(4)" class="btn-menu square btn-player hide-touch">4</button>
+            <button id="player-2" value="2" onclick="setPlayers(2)" class="btn-menu square btn-player">2</button>
+            <button id="player-3" value="3" onclick="setPlayers(3)" class="btn-menu square btn-player">3</button>
+            <button id="player-4" value="4" onclick="setPlayers(4)" class="btn-menu square btn-player">4</button>
           </div>
         </div>
         <div class="space-top-l">

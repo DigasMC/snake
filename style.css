@@ -191,6 +191,38 @@ label + label {
   grid-area: right;
 }
 
+.touch-controlers {
+  position: fixed;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+}
+
+.touch-controlers .keys {
+  grid-template-columns: 80px 80px 80px;
+  gap: 5px;
+}
+
+.touch-controlers .keys > div {
+  opacity: 0.3;
+  display:flex;
+  vertical-align: middle;
+  text-align: center;
+  color: black;
+  width: 80px;
+  height: 80px;
+  line-height: 76px;
+  font-size: 72px!important;
+  border: solid 1px black;
+  background-color: grey;
+}
+
+.touch-controlers .material-symbols-outlined {
+  font-size: 62px!important;
+  line-height: 1.2!important;
+  margin: auto;
+}
+
 .sprite {
   display: none;
 }
@@ -318,6 +350,10 @@ label + label {
   max-width: min(250px, 50vw);
 }
 
+.only-touch {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .modal {
     display: none;
@@ -332,5 +368,9 @@ label + label {
 @media (pointer: coarse) {
   .hide-touch {
     display: none;
+  }
+
+  .only-touch {
+    display: block;
   }
 }
