@@ -1156,7 +1156,7 @@ function setPlayerName(e, player) {
   gameManager.setName(idx, name);
 }
 
-var mc = new Hammer(document.getElementById("canvas"));
+var mc = new Hammer(document.body);
 
 // listen to events...
 mc.on("panleft swipeleft", function(ev) {

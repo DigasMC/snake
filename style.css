@@ -328,3 +328,9 @@ label + label {
     min-width: 95vw;
   }
 }
+
+@media (pointer: coarse) {
+  .hide-touch {
+    display: none;
+  }
+}
