@@ -159,6 +159,7 @@ class Snake {
   }
 
   draw(ctx, squareSize) {
+
     if (!this.isDead) {
       for (let b in this.body) {
         ctx.fillStyle = this.color;
@@ -525,8 +526,8 @@ class Game {
       invalid = false;
 
       pos = new Pos(
-        Math.floor(Math.random() * (this.cols - 1)),
-        Math.floor(Math.random() * (this.rows - 1))
+        Math.floor(Math.random() * (this.cols - 3) + 1),
+        Math.floor(Math.random() * (this.rows - 3) + 1)
       );
 
       for (let snake in this.snakes) {
@@ -1154,3 +1155,22 @@ function setPlayerName(e, player) {
 
   gameManager.setName(idx, name);
 }
+
+var mc = new Hammer(document.getElementById("canvas"));
+
+// listen to events...
+mc.on("panleft swipeleft", function(ev) {
+  gameManager.input({key: "arrowleft"}, gameManager)
+});
+
+mc.on("panright swiperight", function(ev) {
+  gameManager.input({key: "arrowright"}, gameManager)
+});
+
+mc.on("panup swipeup", function(ev) {
+  gameManager.input({key: "arrowup"}, gameManager)
+});
+
+mc.on("pandown swipedown", function(ev) {
+  gameManager.input({key: "arrowdown"}, gameManager)
+});

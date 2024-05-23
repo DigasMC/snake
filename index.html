@@ -66,9 +66,9 @@
         <div class="space-top-xl">
           <button class="btn-menu" onclick="openControlsModal(); closeInitModal()">
             <span class="material-symbols-outlined">
-              keyboard
+              settings
             </span>
-            <span>Controls</span>
+            <span>Settings</span>
           </button>
           <button id="start" class="btn-menu" onclick="startGame()">
             <span class="material-symbols-outlined">
@@ -403,7 +403,7 @@
     </div>
     <div id="controlsModal" class="modal">
       <div class="modal-header">
-        <h2>Controls</h2>
+        <h2>Settings</h2>
       </div>
       <div class="modal-content">
         <div class="menu">
@@ -681,11 +681,14 @@
                 <label for="player-1-name">Name:</label>
                 <input onchange="setPlayerName(event, 1)" type="text" name="player1Name" id="player-1-name-input">
               </div>
-              <div class="keys">
-                <div class="left">←</div>
-                <div class="up">↑</div>
-                <div class="down">↓</div>
-                <div class="right">→</div>
+              <div class="input-container">
+                <span for="">Controls:</span>
+                <div class="keys">
+                  <div class="left">←</div>
+                  <div class="up">↑</div>
+                  <div class="down">↓</div>
+                  <div class="right">→</div>
+                </div>
               </div>
             </div>
             <div id="player-2-controls" class="player">
@@ -961,6 +964,7 @@
                 <label for="player-2-name">Name:</label>
                 <input onchange="setPlayerName(event, 2)" type="text" name="player2Name" id="player-2-name-input">
               </div>
+              <label for="">Controls:</label>
               <div class="keys">
                 <div class="left">A</div>
                 <div class="up">W</div>
@@ -1547,6 +1551,8 @@
         </div>
       </div>
     </div>
+    
+    <script src="https://hammerjs.github.io/dist/hammer.js"></script>
     <script src="./SnakeMultiplayer.js"></script>
     <style id="snakeColors"></style>
   </body>

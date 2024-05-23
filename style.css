@@ -98,6 +98,7 @@ label + label {
 
 .player .input-container {
   display: flex;
+  flex-direction: column;
   vertical-align: middle;
   margin-top: 10px;
   gap: 5px;
@@ -157,9 +158,9 @@ label + label {
   display: grid;
   grid-template-columns: 20px 20px 20px;
   grid-template-areas: ". up ." "left down right";
-  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: o;
 }
 
 .keys > div {
@@ -315,4 +316,15 @@ label + label {
 
 .winner-podium svg {
   max-width: min(250px, 50vw);
+}
+
+@media (max-width: 900px) {
+  .modal {
+    display: none;
+    position: absolute;
+    max-height: 95vh;
+    min-height: 0;
+    max-width: 95vw;
+    min-width: 95vw;
+  }
 }
