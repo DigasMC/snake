@@ -203,7 +203,11 @@ label + label {
   gap: 5px;
 }
 
-.touch-controlers .keys > div {
+.touch-controlers .keys > button {
+  display: static;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   opacity: 0.3;
   display:flex;
   vertical-align: middle;
