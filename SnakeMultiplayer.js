@@ -38,7 +38,7 @@ class Snake {
   head;
   body = [];
   direction;
-  speed = 7;
+  speed = 6;
   baseSpeed = 7;
   resting = 0;
   nextDirection;
@@ -85,7 +85,7 @@ class Snake {
   hasBody(position) {
     if (position instanceof Pos) {
       for (let i in this.body) {
-        if (this.body[i].x == position.x && this.body[i].y == position.y) {
+        if (this.body[i].equals(position)) {
           return true;
         }
       }
@@ -350,7 +350,6 @@ class Pepper extends Consumible {
   
 }
 
-
 class Banana extends Consumible {
 
   constructor(position) {
@@ -365,7 +364,6 @@ class Banana extends Consumible {
   
 }
 
-
 class Watermelon extends Consumible {
 
   constructor(position) {
@@ -379,19 +377,10 @@ class Watermelon extends Consumible {
   
 }
 
-class Player {
-  color;
-  name;
-
-
-  constructor(name = "Default Player") {
-    this.name = name;
-  }
-}
-
 class Game {
   snakes = [];
   consumibles = [];
+  walls = [];
   isInfinite = false;
   numOfPlayers = 1;
   isFullscreen = false;
@@ -409,6 +398,7 @@ class Game {
   score = 0;
   snakesCollided = [];
   isPaused = false;
+  isDrawingMode = false;
   colors = [Color.GREEN, Color.BLUE, Color.PINK, Color.ORANGE]
   names = ["Player 1", "Player 2", "Player 3", "Player 4"]
 
@@ -605,6 +595,15 @@ class Game {
     for (let a in this.consumibles) {
       this.consumibles[a].draw(this.ctx, this.squareSize)
     }
+    for (let w in this.walls) {
+      this.ctx.fillStyle = "black"
+      this.ctx.fillRect(
+        this.walls[w].x * this.squareSize,
+        this.walls[w].y * this.squareSize,
+        this.squareSize,
+        this.squareSize
+      );
+    }
   }
 
   start() {
@@ -766,6 +765,15 @@ class Game {
             this.snakes[s].head.y = 0;
         }
       }
+
+      for(let w in this.walls) {
+        if(this.snakes[s].head.equals(this.walls[w])) {
+          if (!this.snakesCollided.includes(s)) {
+            this.snakesCollided.push(s);
+          }
+        }
+      }
+
     }
 
     this.draw();
@@ -778,171 +786,205 @@ class Game {
     }
   }
 
-  input(e, gm) {
+  input(e) {
     switch (e.key.toLowerCase()) {
       case "arrowup":
-        if (gm.snakes.length > 0) {
+        if (this.snakes.length > 0) {
           if (
-            gm.snakes[0].direction != Direction.DOWN ||
-            gm.snakes[0].body.length == 1
+            this.snakes[0].direction != Direction.DOWN ||
+            this.snakes[0].body.length == 1
           ) {
-            gm.snakes[0].nextDirection = Direction.UP;
+            this.snakes[0].nextDirection = Direction.UP;
           }
         }
         break;
       case "arrowdown":
-        if (gm.snakes.length > 0) {
+        if (this.snakes.length > 0) {
           if (
-            gm.snakes[0].direction != Direction.UP ||
-            gm.snakes[0].body.length == 1
+            this.snakes[0].direction != Direction.UP ||
+            this.snakes[0].body.length == 1
           ) {
-            gm.snakes[0].nextDirection = Direction.DOWN;
+            this.snakes[0].nextDirection = Direction.DOWN;
           }
         }
         break;
       case "arrowleft":
-        if (gm.snakes.length > 0) {
+        if (this.snakes.length > 0) {
           if (
-            gm.snakes[0].direction != Direction.RIGHT ||
-            gm.snakes[0].body.length == 1
+            this.snakes[0].direction != Direction.RIGHT ||
+            this.snakes[0].body.length == 1
           ) {
-            gm.snakes[0].nextDirection = Direction.LEFT;
+            this.snakes[0].nextDirection = Direction.LEFT;
           }
         }
         break;
       case "arrowright":
-        if (gm.snakes.length > 0) {
+        if (this.snakes.length > 0) {
           if (
-            gm.snakes[0].direction != Direction.LEFT ||
-            gm.snakes[0].body.length == 1
+            this.snakes[0].direction != Direction.LEFT ||
+            this.snakes[0].body.length == 1
           ) {
-            gm.snakes[0].nextDirection = Direction.RIGHT;
+            this.snakes[0].nextDirection = Direction.RIGHT;
           }
         }
         break;
       case "a":
-        if (gm.snakes.length > 1) {
+        if (this.snakes.length > 1) {
           if (
-            gm.snakes[1].direction != Direction.RIGHT ||
-            gm.snakes[1].body.length == 1
+            this.snakes[1].direction != Direction.RIGHT ||
+            this.snakes[1].body.length == 1
           ) {
-            gm.snakes[1].nextDirection = Direction.LEFT;
+            this.snakes[1].nextDirection = Direction.LEFT;
           }
         }
         break;
       case "s":
-        if (gm.snakes.length > 1) {
+        if (this.snakes.length > 1) {
           if (
-            gm.snakes[1].direction != Direction.UP ||
-            gm.snakes[1].body.length == 1
+            this.snakes[1].direction != Direction.UP ||
+            this.snakes[1].body.length == 1
           ) {
-            gm.snakes[1].nextDirection = Direction.DOWN;
+            this.snakes[1].nextDirection = Direction.DOWN;
           }
         }
         break;
       case "w":
-        if (gm.snakes.length > 1) {
+        if (this.snakes.length > 1) {
           if (
-            gm.snakes[1].direction != Direction.DOWN ||
-            gm.snakes[1].body.length == 1
+            this.snakes[1].direction != Direction.DOWN ||
+            this.snakes[1].body.length == 1
           ) {
-            gm.snakes[1].nextDirection = Direction.UP;
+            this.snakes[1].nextDirection = Direction.UP;
           }
         }
         break;
       case "d":
-        if (gm.snakes.length > 1) {
+        if (this.snakes.length > 1) {
           if (
-            gm.snakes[1].direction != Direction.LEFT ||
-            gm.snakes[1].body.length == 1
+            this.snakes[1].direction != Direction.LEFT ||
+            this.snakes[1].body.length == 1
           ) {
-            gm.snakes[1].nextDirection = Direction.RIGHT;
+            this.snakes[1].nextDirection = Direction.RIGHT;
           }
         }
         break;
       case "i":
-        if (gm.snakes.length > 2) {
+        if (this.snakes.length > 2) {
           if (
-            gm.snakes[2].direction != Direction.DOWN ||
-            gm.snakes[2].body.length == 1
+            this.snakes[2].direction != Direction.DOWN ||
+            this.snakes[2].body.length == 1
           ) {
-            gm.snakes[2].nextDirection = Direction.UP;
+            this.snakes[2].nextDirection = Direction.UP;
           }
         }
         break;
       case "k":
-        if (gm.snakes.length > 2) {
+        if (this.snakes.length > 2) {
           if (
-            gm.snakes[2].direction != Direction.UP ||
-            gm.snakes[2].body.length == 1
+            this.snakes[2].direction != Direction.UP ||
+            this.snakes[2].body.length == 1
           ) {
-            gm.snakes[2].nextDirection = Direction.DOWN;
+            this.snakes[2].nextDirection = Direction.DOWN;
           }
         }
         break;
       case "j":
-        if (gm.snakes.length > 2) {
+        if (this.snakes.length > 2) {
           if (
-            gm.snakes[2].direction != Direction.RIGHT ||
-            gm.snakes[2].body.length == 1
+            this.snakes[2].direction != Direction.RIGHT ||
+            this.snakes[2].body.length == 1
           ) {
-            gm.snakes[2].nextDirection = Direction.LEFT;
+            this.snakes[2].nextDirection = Direction.LEFT;
           }
         }
         break;
       case "l":
-        if (gm.snakes.length > 2) {
+        if (this.snakes.length > 2) {
           if (
-            gm.snakes[2].direction != Direction.LEFT ||
-            gm.snakes[2].body.length == 1
+            this.snakes[2].direction != Direction.LEFT ||
+            this.snakes[2].body.length == 1
           ) {
-            gm.snakes[2].nextDirection = Direction.RIGHT;
+            this.snakes[2].nextDirection = Direction.RIGHT;
           }
         }
         break;
       case "8":
-        if (gm.snakes.length > 3) {
+        if (this.snakes.length > 3) {
           if (
-            gm.snakes[3].direction != Direction.DOWN ||
-            gm.snakes[3].body.length == 1
+            this.snakes[3].direction != Direction.DOWN ||
+            this.snakes[3].body.length == 1
           ) {
-            gm.snakes[3].nextDirection = Direction.UP;
+            this.snakes[3].nextDirection = Direction.UP;
           }
         }
         break;
       case "5":
-        if (gm.snakes.length > 3) {
+        if (this.snakes.length > 3) {
           if (
-            gm.snakes[3].direction != Direction.UP ||
-            gm.snakes[3].body.length == 1
+            this.snakes[3].direction != Direction.UP ||
+            this.snakes[3].body.length == 1
           ) {
-            gm.snakes[3].nextDirection = Direction.DOWN;
+            this.snakes[3].nextDirection = Direction.DOWN;
           }
         }
         break;
       case "4":
-        if (gm.snakes.length > 3) {
+        if (this.snakes.length > 3) {
           if (
-            gm.snakes[3].direction != Direction.RIGHT ||
-            gm.snakes[3].body.length == 1
+            this.snakes[3].direction != Direction.RIGHT ||
+            this.snakes[3].body.length == 1
           ) {
-            gm.snakes[3].nextDirection = Direction.LEFT;
+            this.snakes[3].nextDirection = Direction.LEFT;
           }
         }
         break;
       case "6":
-        if (gm.snakes.length > 3) {
+        if (this.snakes.length > 3) {
           if (
-            gm.snakes[3].direction != Direction.LEFT ||
-            gm.snakes[3].body.length == 1
+            this.snakes[3].direction != Direction.LEFT ||
+            this.snakes[3].body.length == 1
           ) {
-            gm.snakes[3].nextDirection = Direction.RIGHT;
+            this.snakes[3].nextDirection = Direction.RIGHT;
           }
         }
         break;
       case "escape":
-        gm.pause();
+        if(this.isDrawingMode) {
+          this.toggleDrawingMode();
+        } else {
+          this.pause();
+        }
         break;
+    }
+  }
+
+  toggleDrawingMode() {
+    if(this.isDrawingMode) {
+      this.isDrawingMode = false;
+      openInitModal();
+      this.canvas.onclick = () =>  {}
+    } else {
+      this.isDrawingMode = true;
+      closeInitModal();
+      this.canvas.onclick = (e) =>  {
+        let mX = Math.floor((e.offsetX / 20) % this.cols);
+        let mY = Math.floor((e.offsetY / 20) % this.rows);
+
+        let idx = -1;
+        for(let w in this.walls) {
+          if(this.walls[w].equals(new Pos(mX, mY))) {
+            idx = w;
+          }
+        }
+
+        if(idx != -1) {
+          this.walls.splice(idx, 1)
+        } else {
+          this.walls.push(new Pos(mX, mY))
+        }
+
+        this.draw()
+      }
     }
   }
 }
@@ -955,12 +997,11 @@ window.addEventListener("resize", function (event) {
 });
 
 window.addEventListener("keydown", function (event) {
-  console.log(event.target)
   if(event.key.toLowerCase() == " " && event.target.tagName !== "INPUT") {
     if(gameManager.isPaused) {
       gameManager.pause();
     } else {
-      if(!gameManager.isLive) {
+      if(!gameManager.isLive && !gameManager.isDrawingMode) {
         startGame();
       }
     }
@@ -1139,6 +1180,10 @@ function showScores(pontuation = [], snakes = [], winner) {
 
   document.getElementById("scoreModal").classList.add("show")
 
+}
+
+function openDrawingMode() {
+  gameManager.toggleDrawingMode()
 }
 
 function setPlayerColor(e, player) {

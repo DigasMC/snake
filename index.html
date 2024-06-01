@@ -88,6 +88,12 @@
           </div>
         </div>
         <div class="space-top-xl">
+          <button class="btn-menu" onclick="openDrawingMode()">
+            <span class="material-symbols-outlined">
+              border_color
+            </span>
+            <span>Draw Walls</span>
+          </button>
           <button class="btn-menu" onclick="openControlsModal(); closeInitModal()">
             <span class="material-symbols-outlined">
               settings
@@ -988,12 +994,14 @@
                 <label for="player-2-name">Name:</label>
                 <input onchange="setPlayerName(event, 2)" type="text" name="player2Name" id="player-2-name-input">
               </div>
-              <label for="">Controls:</label>
-              <div class="keys">
-                <div class="left">A</div>
-                <div class="up">W</div>
-                <div class="down">S</div>
-                <div class="right">D</div>
+              <div class="input-container">
+                <label for="">Controls:</label>
+                <div class="keys">
+                  <div class="left">A</div>
+                  <div class="up">W</div>
+                  <div class="down">S</div>
+                  <div class="right">D</div>
+                </div>
               </div>
             </div>
             <div id="player-3-controls" class="player">
@@ -1269,11 +1277,14 @@
                 <label for="player-3-name">Name:</label>
                 <input onchange="setPlayerName(event, 3)" type="text" name="player3Name" id="player-3-name-input">
               </div>
-              <div class="keys">
-                <div class="left">J</div>
-                <div class="up">I</div>
-                <div class="down">K</div>
-                <div class="right">L</div>
+              <div class="input-container">
+                <span>Controls: </span>
+                <div class="keys">
+                  <div class="left">J</div>
+                  <div class="up">I</div>
+                  <div class="down">K</div>
+                  <div class="right">L</div>
+                </div>
               </div>
             </div>
             <div id="player-4-controls" class="player">
@@ -1549,11 +1560,14 @@
                 <label for="player-4-name">Name:</label>
                 <input onchange="setPlayerName(event, 4)" type="text" name="player4Name" id="player-4-name-input">
               </div>
-              <div class="keys">
-                <div class="left">4</div>
-                <div class="up">8</div>
-                <div class="down">5</div>
-                <div class="right">6</div>
+              <div class="input-container">
+                <span>Controls: </span>
+                <div class="keys">
+                  <div class="left">4</div>
+                  <div class="up">8</div>
+                  <div class="down">5</div>
+                  <div class="right">6</div>
+                </div>
               </div>
             </div>
           </div>
