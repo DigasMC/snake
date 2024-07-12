@@ -243,7 +243,7 @@ label + label {
   margin-top: 40px;
 }
 
-.modal {
+.modal, .drawer {
   display: none;
   position: absolute;
   max-height: 90vh;
@@ -261,8 +261,25 @@ label + label {
     );
 }
 
-.modal.show {
+.drawer .drawer-arrow {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.modal.show, .drawer.show {
   display: block!important;
+}
+
+.drawer.show {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  top:0;
+  transform: translateY(calc(-100% + 30px)) translateX(-50%);
+  transition: transform .3s ease-in-out;
+}
+
+.drawer.show:hover {
+  transform: translateY(0) translateX(-50%);
 }
 
 .modal .modal-header {
@@ -290,7 +307,7 @@ label + label {
   margin: auto;
 }
 
-.modal .modal-content {
+.modal .modal-content, .drawer .drawer-content {
   padding: 15px;
 }
 

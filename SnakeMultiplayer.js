@@ -164,7 +164,7 @@ class Snake {
       for (let b in this.body) {
         ctx.fillStyle = this.color;
 
-        if(b == this.body.length -1) {
+        if(b == this.body.length -1) { //Draw head
           ctx.beginPath();
           ctx.arc(
             this.body[b].x * squareSize + squareSize / 2,
@@ -210,7 +210,7 @@ class Snake {
               );
               break;
           }
-        } else if (b == 0) {
+        } else if (b == 0) { // Draw tail
           ctx.beginPath()
           if(this.body[Number(b) + 1].x > this.body[b].x) {
             ctx.ellipse( //RIGHT 
@@ -254,7 +254,7 @@ class Snake {
             )
           }
           ctx.fill()
-        } else {
+        } else { // Draw Body
           ctx.fillRect(
             this.body[b].x * squareSize,
             this.body[b].y * squareSize,
@@ -958,14 +958,21 @@ class Game {
     }
   }
 
+  resetDrawing() {
+    this.walls = []
+    this.draw()
+  }
+
   toggleDrawingMode() {
     if(this.isDrawingMode) {
       this.isDrawingMode = false;
       openInitModal();
+      closeMapEditDrawer();
       this.canvas.onclick = () =>  {}
     } else {
       this.isDrawingMode = true;
       closeInitModal();
+      openMapEditDrawer();
       this.canvas.onclick = (e) =>  {
         let mX = Math.floor((e.offsetX / 20) % this.cols);
         let mY = Math.floor((e.offsetY / 20) % this.rows);
@@ -1184,6 +1191,22 @@ function showScores(pontuation = [], snakes = [], winner) {
 
 function openDrawingMode() {
   gameManager.toggleDrawingMode()
+}
+
+function closeDrawingMode() {
+  gameManager.toggleDrawingMode()
+}
+
+function resetMap() {
+  gameManager.resetDrawing()
+}
+
+function openMapEditDrawer() {
+  document.getElementById('mapEditDrawer').classList.add('show');
+}
+
+function closeMapEditDrawer() {
+  document.getElementById('mapEditDrawer').classList.remove('show');
 }
 
 function setPlayerColor(e, player) {
