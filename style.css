@@ -384,6 +384,11 @@ label + label {
     max-width: 95vw;
     min-width: 95vw;
   }
+
+  .drawer {
+    max-width: 95vw;
+    min-width: 95vw;
+  }
 }
 
 @media (pointer: coarse) {
